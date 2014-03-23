@@ -1,14 +1,43 @@
+{
+}
+
 /* ===== Syntactical Elements ===== */
 
 start
   = declaration
+  / definition
 
 declaration
-  = typename:identifier _ varname:identifier _ description:string? _ ";"
+  = quals:qualifier* typename:identifier _ varname:identifier dstr:dstring ";" {
+    return {
+      "element": "declaration",
+      "qualifiers": quals,
+      "typename": typename,
+      "varname": varname,
+      "description": dstr
+    };
+  }
+
+definition
+  = quals:qualifier* name:identifier dstr:dstring? _ "{" _ "}" {
+    return {
+      "qualifiers": quals,
+      "element": "definition",
+      "name": name,
+      "description": dstr
+    };
+  }
+
+dstring
+  = { return null; }
+  / _ str:"$comment$" { return str; }
+
+qualifier
+  = "@" qual:identifier _ { return qual; }
 
 identifier
-  = [a-zA-Z_]+
-  / "'" identifier "'"
+  = chars:[a-zA-Z_]+ { return chars.join(""); }
+  / "'" chars:[a-zA-Z_]+ "'" { return chars.join(""); }
 
 json
   = _ object:object { return object; }
