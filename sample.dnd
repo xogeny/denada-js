@@ -1,0 +1,21 @@
+@class X {
+  public {
+    Real x "A variable";
+    @discrete Integer y;
+  }
+}
+
+interface {
+  panel "Foo" {
+    parameter x.y.z = {"label": "Z Parameter"};
+  }
+}
+
+/* Grammar */
+
+interface "interface*" {
+  panel "panel*" {
+    parameter '.*' "p_nohints*";
+    parameter '.*' = {"label": string} "p_hints";
+  }
+}

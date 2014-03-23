@@ -19,7 +19,7 @@ declaration
   }
 
 definition
-  = quals:qualifier* name:identifier dstr:dstring? _ "{" _ "}" {
+  = quals:qualifier* name:identifier dstr:dstring _ "{" _ "}" {
     return {
       "qualifiers": quals,
       "element": "definition",
@@ -29,8 +29,7 @@ definition
   }
 
 dstring
-  = { return null; }
-  / _ str:"$comment$" { return str; }
+  = (_ s:string { return s; })?
 
 qualifier
   = "@" qual:identifier _ { return qual; }

@@ -9,7 +9,7 @@ describe("Checking basic syntax", function() {
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.typename, "Real");
 	assert.equal(ast.varname, "x");
-	assert.equal(ast.definition, undefined);
+	assert.equal(ast.description, undefined);
 	done();
     });
     it("should parse qualified declarations", function(done) {
@@ -18,7 +18,7 @@ describe("Checking basic syntax", function() {
 	assert.deepEqual(ast.qualifiers, ["foo", "bar"]);
 	assert.equal(ast.typename, "Real");
 	assert.equal(ast.varname, "x");
-	assert.equal(ast.definition, undefined);
+	assert.equal(ast.description, undefined);
 	done();
     });
     it("should parse quoted types", function(done) {
@@ -27,7 +27,7 @@ describe("Checking basic syntax", function() {
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.typename, "Real");
 	assert.equal(ast.varname, "x");
-	assert.equal(ast.definition, undefined);
+	assert.equal(ast.description, undefined);
 	done();
     });
     it("should parse quoted variable names", function(done) {
@@ -36,7 +36,7 @@ describe("Checking basic syntax", function() {
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.typename, "Real");
 	assert.equal(ast.varname, "x");
-	assert.equal(ast.definition, undefined);
+	assert.equal(ast.description, undefined);
 	done();
     });
     it("should parse descriptive strings", function(done) {
@@ -45,7 +45,7 @@ describe("Checking basic syntax", function() {
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.typename, "Real");
 	assert.equal(ast.varname, "x");
-	assert.equal(ast.definition, "This is the variable x");
+	assert.equal(ast.description, "This is the variable x");
 	done();
     });
 });

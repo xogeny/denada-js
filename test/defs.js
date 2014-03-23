@@ -8,7 +8,7 @@ describe("Checking definition syntax", function() {
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, ["class"]);
 	assert.equal(ast.name, "X");
-	assert.equal(ast.definition, null);
+	assert.equal(ast.description, null);
 	done();
     });
 
@@ -17,16 +17,16 @@ describe("Checking definition syntax", function() {
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.name, "start");
-	assert.equal(ast.definition, null);
+	assert.equal(ast.description, null);
 	done();
     });
 
     it("should parse documented definitions", function(done) {
-	var ast = denada.parse("start $comment$ { }");
+	var ast = denada.parse('start "comment" { }');
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.name, "start");
-	assert.equal(ast.definition, "comment");
+	assert.equal(ast.description, "comment");
 	done();
     });
 });
