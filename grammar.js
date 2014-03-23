@@ -49,11 +49,12 @@ module.exports = (function() {
         peg$c6 = { type: "literal", value: "{", description: "\"{\"" },
         peg$c7 = "}",
         peg$c8 = { type: "literal", value: "}", description: "\"}\"" },
-        peg$c9 = function(quals, name, dstr) {
+        peg$c9 = function(quals, name, dstr, contents) {
             return {
               "qualifiers": quals,
               "element": "definition",
               "name": name,
+              "contents": contents,
               "description": dstr
             };
           },
@@ -338,6 +339,17 @@ module.exports = (function() {
       return s0;
     }
 
+    function peg$parseelement() {
+      var s0;
+
+      s0 = peg$parsedeclaration();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsedefinition();
+      }
+
+      return s0;
+    }
+
     function peg$parsedeclaration() {
       var s0, s1, s2, s3, s4, s5, s6;
 
@@ -397,7 +409,7 @@ module.exports = (function() {
     }
 
     function peg$parsedefinition() {
-      var s0, s1, s2, s3, s4, s5, s6, s7;
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
 
       s0 = peg$currPos;
       s1 = [];
@@ -423,17 +435,28 @@ module.exports = (function() {
               if (s5 !== peg$FAILED) {
                 s6 = peg$parse_();
                 if (s6 !== peg$FAILED) {
-                  if (input.charCodeAt(peg$currPos) === 125) {
-                    s7 = peg$c7;
-                    peg$currPos++;
-                  } else {
-                    s7 = peg$FAILED;
-                    if (peg$silentFails === 0) { peg$fail(peg$c8); }
+                  s7 = [];
+                  s8 = peg$parseelement();
+                  while (s8 !== peg$FAILED) {
+                    s7.push(s8);
+                    s8 = peg$parseelement();
                   }
                   if (s7 !== peg$FAILED) {
-                    peg$reportedPos = s0;
-                    s1 = peg$c9(s1, s2, s3);
-                    s0 = s1;
+                    if (input.charCodeAt(peg$currPos) === 125) {
+                      s8 = peg$c7;
+                      peg$currPos++;
+                    } else {
+                      s8 = peg$FAILED;
+                      if (peg$silentFails === 0) { peg$fail(peg$c8); }
+                    }
+                    if (s8 !== peg$FAILED) {
+                      peg$reportedPos = s0;
+                      s1 = peg$c9(s1, s2, s3, s7);
+                      s0 = s1;
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
                   } else {
                     peg$currPos = s0;
                     s0 = peg$c0;

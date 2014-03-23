@@ -7,6 +7,10 @@ start
   = declaration
   / definition
 
+element
+  = declaration
+  / definition
+
 declaration
   = quals:qualifier* typename:identifier _ varname:identifier dstr:dstring ";" {
     return {
@@ -19,11 +23,12 @@ declaration
   }
 
 definition
-  = quals:qualifier* name:identifier dstr:dstring _ "{" _ "}" {
+  = quals:qualifier* name:identifier dstr:dstring _ "{" _ contents: element* "}" {
     return {
       "qualifiers": quals,
       "element": "definition",
       "name": name,
+      "contents": contents,
       "description": dstr
     };
   }
