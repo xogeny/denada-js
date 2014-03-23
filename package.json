@@ -1,0 +1,27 @@
+{
+  "name": "denada",
+  "version": "0.1.0",
+  "description": "A declarative language with no semantics useful for simple DSLs",
+  "main": "denada.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/xogeny/denada.git"
+  },
+  "keywords": [
+    "DSL",
+    "parser",
+    "declarative"
+  ],
+  "author": "Michael M. Tiller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xogeny/denada/issues"
+  },
+  "homepage": "https://github.com/xogeny/denada",
+  "dependencies": {
+    "pegjs": "^0.8.0"
+  }
+}
