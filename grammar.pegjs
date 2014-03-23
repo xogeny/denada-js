@@ -11,12 +11,14 @@ element
   / definition
 
 declaration
-  = quals:qualifier* typename:identifier _ varname:identifier dstr:dstring ";" {
+  = quals:qualifier* typename:identifier _ varname:identifier
+    dstr:dstring val:assignment ";" {
     return {
       "element": "declaration",
       "qualifiers": quals,
       "typename": typename,
       "varname": varname,
+      "value": val,
       "description": dstr
     };
   }
@@ -35,12 +37,18 @@ definition
 dstring
   = (_ s:string { return s; })?
 
+assignment
+  = (_ "=" _ e:expr { return e; })?
+
 qualifier
   = "@" qual:identifier _ { return qual; }
 
 identifier
   = chars:[a-zA-Z_]+ { return chars.join(""); }
   / "'" chars:[a-zA-Z_]+ "'" { return chars.join(""); }
+
+expr
+  = value
 
 json
   = _ object:object { return object; }

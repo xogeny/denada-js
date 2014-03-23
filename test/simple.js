@@ -12,6 +12,26 @@ describe("Checking basic syntax", function() {
 	assert.equal(ast.description, undefined);
 	done();
     });
+    it("should parse declarations with assignment", function(done) {
+	var ast = denada.parse("Real x = 5;")[0];
+	assert.equal(ast.element, "declaration");
+	assert.deepEqual(ast.qualifiers, []);
+	assert.equal(ast.typename, "Real");
+	assert.equal(ast.varname, "x");
+	assert.equal(ast.value, 5);
+	assert.equal(ast.description, undefined);
+	done();
+    });
+    it("should parse declarations with object assignment", function(done) {
+	var ast = denada.parse('Real x = {"z": 5};')[0];
+	assert.equal(ast.element, "declaration");
+	assert.deepEqual(ast.qualifiers, []);
+	assert.equal(ast.typename, "Real");
+	assert.equal(ast.varname, "x");
+	assert.deepEqual(ast.value, {z: 5});
+	assert.equal(ast.description, undefined);
+	done();
+    });
     it("should parse qualified declarations", function(done) {
 	var ast = denada.parse("@foo @'bar' Real x;")[0];
 	assert.equal(ast.element, "declaration");
