@@ -32,8 +32,8 @@ module.exports = (function() {
         peg$startRuleFunctions = { start: peg$parsestart },
         peg$startRuleFunction  = peg$parsestart,
 
-        peg$c0 = peg$FAILED,
-        peg$c1 = [],
+        peg$c0 = [],
+        peg$c1 = peg$FAILED,
         peg$c2 = ";",
         peg$c3 = { type: "literal", value: ";", description: "\";\"" },
         peg$c4 = function(quals, typename, varname, dstr) {
@@ -329,11 +329,13 @@ module.exports = (function() {
     }
 
     function peg$parsestart() {
-      var s0;
+      var s0, s1;
 
-      s0 = peg$parsedeclaration();
-      if (s0 === peg$FAILED) {
-        s0 = peg$parsedefinition();
+      s0 = [];
+      s1 = peg$parseelement();
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parseelement();
       }
 
       return s0;
@@ -382,27 +384,27 @@ module.exports = (function() {
                   s0 = s1;
                 } else {
                   peg$currPos = s0;
-                  s0 = peg$c0;
+                  s0 = peg$c1;
                 }
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -455,35 +457,35 @@ module.exports = (function() {
                       s0 = s1;
                     } else {
                       peg$currPos = s0;
-                      s0 = peg$c0;
+                      s0 = peg$c1;
                     }
                   } else {
                     peg$currPos = s0;
-                    s0 = peg$c0;
+                    s0 = peg$c1;
                   }
                 } else {
                   peg$currPos = s0;
-                  s0 = peg$c0;
+                  s0 = peg$c1;
                 }
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -502,11 +504,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
       if (s0 === peg$FAILED) {
         s0 = peg$c10;
@@ -536,15 +538,15 @@ module.exports = (function() {
             s0 = s1;
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -574,7 +576,7 @@ module.exports = (function() {
           }
         }
       } else {
-        s1 = peg$c0;
+        s1 = peg$c1;
       }
       if (s1 !== peg$FAILED) {
         peg$reportedPos = s0;
@@ -611,7 +613,7 @@ module.exports = (function() {
               }
             }
           } else {
-            s2 = peg$c0;
+            s2 = peg$c1;
           }
           if (s2 !== peg$FAILED) {
             if (input.charCodeAt(peg$currPos) === 39) {
@@ -627,15 +629,15 @@ module.exports = (function() {
               s0 = s1;
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       }
 
@@ -655,11 +657,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -694,19 +696,19 @@ module.exports = (function() {
               s0 = s1;
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
@@ -737,23 +739,23 @@ module.exports = (function() {
                   s0 = s1;
                 } else {
                   peg$currPos = s0;
-                  s0 = peg$c0;
+                  s0 = peg$c1;
                 }
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       }
 
@@ -784,15 +786,15 @@ module.exports = (function() {
               s3 = s4;
             } else {
               peg$currPos = s3;
-              s3 = peg$c0;
+              s3 = peg$c1;
             }
           } else {
             peg$currPos = s3;
-            s3 = peg$c0;
+            s3 = peg$c1;
           }
         } else {
           peg$currPos = s3;
-          s3 = peg$c0;
+          s3 = peg$c1;
         }
         while (s3 !== peg$FAILED) {
           s2.push(s3);
@@ -813,15 +815,15 @@ module.exports = (function() {
                 s3 = s4;
               } else {
                 peg$currPos = s3;
-                s3 = peg$c0;
+                s3 = peg$c1;
               }
             } else {
               peg$currPos = s3;
-              s3 = peg$c0;
+              s3 = peg$c1;
             }
           } else {
             peg$currPos = s3;
-            s3 = peg$c0;
+            s3 = peg$c1;
           }
         }
         if (s2 !== peg$FAILED) {
@@ -830,11 +832,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -863,19 +865,19 @@ module.exports = (function() {
               s0 = s1;
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -910,19 +912,19 @@ module.exports = (function() {
               s0 = s1;
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
@@ -953,23 +955,23 @@ module.exports = (function() {
                   s0 = s1;
                 } else {
                   peg$currPos = s0;
-                  s0 = peg$c0;
+                  s0 = peg$c1;
                 }
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       }
 
@@ -1000,15 +1002,15 @@ module.exports = (function() {
               s3 = s4;
             } else {
               peg$currPos = s3;
-              s3 = peg$c0;
+              s3 = peg$c1;
             }
           } else {
             peg$currPos = s3;
-            s3 = peg$c0;
+            s3 = peg$c1;
           }
         } else {
           peg$currPos = s3;
-          s3 = peg$c0;
+          s3 = peg$c1;
         }
         while (s3 !== peg$FAILED) {
           s2.push(s3);
@@ -1029,15 +1031,15 @@ module.exports = (function() {
                 s3 = s4;
               } else {
                 peg$currPos = s3;
-                s3 = peg$c0;
+                s3 = peg$c1;
               }
             } else {
               peg$currPos = s3;
-              s3 = peg$c0;
+              s3 = peg$c1;
             }
           } else {
             peg$currPos = s3;
-            s3 = peg$c0;
+            s3 = peg$c1;
           }
         }
         if (s2 !== peg$FAILED) {
@@ -1046,11 +1048,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -1083,11 +1085,11 @@ module.exports = (function() {
                   s0 = s1;
                 } else {
                   peg$currPos = s0;
-                  s0 = peg$c0;
+                  s0 = peg$c1;
                 }
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
               if (s0 === peg$FAILED) {
                 s0 = peg$currPos;
@@ -1106,11 +1108,11 @@ module.exports = (function() {
                     s0 = s1;
                   } else {
                     peg$currPos = s0;
-                    s0 = peg$c0;
+                    s0 = peg$c1;
                   }
                 } else {
                   peg$currPos = s0;
-                  s0 = peg$c0;
+                  s0 = peg$c1;
                 }
                 if (s0 === peg$FAILED) {
                   s0 = peg$currPos;
@@ -1129,11 +1131,11 @@ module.exports = (function() {
                       s0 = s1;
                     } else {
                       peg$currPos = s0;
-                      s0 = peg$c0;
+                      s0 = peg$c1;
                     }
                   } else {
                     peg$currPos = s0;
-                    s0 = peg$c0;
+                    s0 = peg$c1;
                   }
                 }
               }
@@ -1173,15 +1175,15 @@ module.exports = (function() {
             s0 = s1;
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
@@ -1210,19 +1212,19 @@ module.exports = (function() {
                 s0 = s1;
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       }
       peg$silentFails--;
@@ -1246,7 +1248,7 @@ module.exports = (function() {
           s2 = peg$parsechar();
         }
       } else {
-        s1 = peg$c0;
+        s1 = peg$c1;
       }
       if (s1 !== peg$FAILED) {
         peg$reportedPos = s0;
@@ -1403,19 +1405,19 @@ module.exports = (function() {
                                   s3 = s4;
                                 } else {
                                   peg$currPos = s3;
-                                  s3 = peg$c0;
+                                  s3 = peg$c1;
                                 }
                               } else {
                                 peg$currPos = s3;
-                                s3 = peg$c0;
+                                s3 = peg$c1;
                               }
                             } else {
                               peg$currPos = s3;
-                              s3 = peg$c0;
+                              s3 = peg$c1;
                             }
                           } else {
                             peg$currPos = s3;
-                            s3 = peg$c0;
+                            s3 = peg$c1;
                           }
                           if (s3 !== peg$FAILED) {
                             s3 = input.substring(s2, peg$currPos);
@@ -1427,11 +1429,11 @@ module.exports = (function() {
                             s0 = s1;
                           } else {
                             peg$currPos = s0;
-                            s0 = peg$c0;
+                            s0 = peg$c1;
                           }
                         } else {
                           peg$currPos = s0;
-                          s0 = peg$c0;
+                          s0 = peg$c1;
                         }
                       }
                     }
@@ -1463,15 +1465,15 @@ module.exports = (function() {
             s2 = s3;
           } else {
             peg$currPos = s2;
-            s2 = peg$c0;
+            s2 = peg$c1;
           }
         } else {
           peg$currPos = s2;
-          s2 = peg$c0;
+          s2 = peg$c1;
         }
       } else {
         peg$currPos = s2;
-        s2 = peg$c0;
+        s2 = peg$c1;
       }
       if (s2 !== peg$FAILED) {
         s2 = input.substring(s1, peg$currPos);
@@ -1485,11 +1487,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
@@ -1503,11 +1505,11 @@ module.exports = (function() {
             s2 = s3;
           } else {
             peg$currPos = s2;
-            s2 = peg$c0;
+            s2 = peg$c1;
           }
         } else {
           peg$currPos = s2;
-          s2 = peg$c0;
+          s2 = peg$c1;
         }
         if (s2 !== peg$FAILED) {
           s2 = input.substring(s1, peg$currPos);
@@ -1521,11 +1523,11 @@ module.exports = (function() {
             s0 = s1;
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
         if (s0 === peg$FAILED) {
           s0 = peg$currPos;
@@ -1539,11 +1541,11 @@ module.exports = (function() {
               s2 = s3;
             } else {
               peg$currPos = s2;
-              s2 = peg$c0;
+              s2 = peg$c1;
             }
           } else {
             peg$currPos = s2;
-            s2 = peg$c0;
+            s2 = peg$c1;
           }
           if (s2 !== peg$FAILED) {
             s2 = input.substring(s1, peg$currPos);
@@ -1557,11 +1559,11 @@ module.exports = (function() {
               s0 = s1;
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
           if (s0 === peg$FAILED) {
             s0 = peg$currPos;
@@ -1579,11 +1581,11 @@ module.exports = (function() {
                 s0 = s1;
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           }
         }
@@ -1609,11 +1611,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
       if (s0 === peg$FAILED) {
         s0 = peg$parsedigit();
@@ -1635,15 +1637,15 @@ module.exports = (function() {
                 s0 = s1;
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           } else {
             peg$currPos = s0;
-            s0 = peg$c0;
+            s0 = peg$c1;
           }
           if (s0 === peg$FAILED) {
             s0 = peg$currPos;
@@ -1661,11 +1663,11 @@ module.exports = (function() {
                 s0 = s1;
               } else {
                 peg$currPos = s0;
-                s0 = peg$c0;
+                s0 = peg$c1;
               }
             } else {
               peg$currPos = s0;
-              s0 = peg$c0;
+              s0 = peg$c1;
             }
           }
         }
@@ -1692,11 +1694,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -1714,11 +1716,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -1735,7 +1737,7 @@ module.exports = (function() {
           s1 = peg$parsedigit();
         }
       } else {
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;
@@ -1768,11 +1770,11 @@ module.exports = (function() {
           s0 = s1;
         } else {
           peg$currPos = s0;
-          s0 = peg$c0;
+          s0 = peg$c1;
         }
       } else {
         peg$currPos = s0;
-        s0 = peg$c0;
+        s0 = peg$c1;
       }
 
       return s0;

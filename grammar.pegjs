@@ -4,8 +4,7 @@
 /* ===== Syntactical Elements ===== */
 
 start
-  = declaration
-  / definition
+  = element*
 
 element
   = declaration

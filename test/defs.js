@@ -4,7 +4,7 @@ var assert = require('assert');
 
 describe("Checking definition syntax", function() {
     it("should parse qualified empty definitions", function(done) {
-	var ast = denada.parse("@class X {}");
+	var ast = denada.parse("@class X {}")[0];
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, ["class"]);
 	assert.equal(ast.name, "X");
@@ -13,7 +13,7 @@ describe("Checking definition syntax", function() {
     });
 
     it("should parse unqualified empty definitions", function(done) {
-	var ast = denada.parse("start {}");
+	var ast = denada.parse("start {}")[0];
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.name, "start");
@@ -22,7 +22,7 @@ describe("Checking definition syntax", function() {
     });
 
     it("should parse documented definitions", function(done) {
-	var ast = denada.parse('start "comment" { }');
+	var ast = denada.parse('start "comment" { }')[0];
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, []);
 	assert.equal(ast.name, "start");
