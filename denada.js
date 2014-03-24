@@ -38,53 +38,83 @@ exports.parseFile = function(s, callback) {
     });
 }
 
-function checkElement(elem, rule) {
+function matchElement(elem, rule) {
+    // If these aren't even the same type of element, they don't match
     if (elem.element!==rule.element) return false;
     if (elem.element=="declaration") {
     } else if (elem.element=="definition") {
     } else {
+	// If they are an unknown element type, they don't match
 	return false;
     }
+    // If no other issue were found, assume they match
     return true;
 }
 
+/*
+ * This function checks a given ast, tree, against another ast, rules, that
+ * that represents the patterns in the AST that are allowed.
+ */
 function checkContents(tree, rules) {
-    var issues = [];
     var rule;
     var desc;
-    var ruledata = {};
     var rulename;
     var endswith;
     var min;
     var max;
+    var elem;
+    var data;
+    var matched;
+
+    var issues = []; // List of issues found (initially empty)
+    var ruledata = {}; // Collection of rules found in the rules ast
+
+    /* We start by looping over the rules and processing each rule we
+       find to collect information for the `ruledata` collection. */
     for(var i=0;i<rules.length;i++) {
+	/* Assume there are no min or max matches required, in general */
 	min = undefined;
 	max = undefined;
+	/* Extract the specific element for this rule */
 	rule = rules[i];
+	/* Extract the description for the rule.  The description contains
+	   the name of the rule and indicates its cardinality. */
 	desc = rule.description;
 	if (desc) {
+	    // Extract the last character in the description
 	    endswith = desc.slice(-1);
+	    // Assume the rule name is all characters but the last (general case)
 	    rulename = desc.slice(0,desc.length-1);
 	    if (endswith=="*") {
+		// Cardinality - Zero or more
 		min = 0;
 	    } else if (endswith=="+") {
+		// Cardinality - One or more
 		min = 1;
 	    } else if (endswith=="?") {
+		// Cardinality - Optional
 		min = 0;
 		max = 1;
 		ruledata[rulename] = {"rule": rule, "rulename": rulename, "min": 0, "max": 1};
 	    } else {
-		rulename = desc;
+		// If none of the above, assume exactly one is required
 		min = 1;
 		max = 1;
+		// Include last character in the rulename
+		rulename = desc;
 	    }
+
+	    // Check to see if we already have a rule with this name...
 	    if (ruledata.hasOwnProperty(rulename)) {
+		// ...if so, make sure cardinality matches...
 		if (ruledata[rulename].desc!==desc) {
 		    throw "Rule "+rulename+" has mismatched cardinality: "+
 			ruledata[rulename].desc+" vs. "+desc;
 		}
+		// ...and then add the current rule as a potential match
 		ruledata[rulename].matches.push(rule);
 	    } else {
+		// ...if not, initialize the rule data for this rule
 		ruledata[rulename] = {
 		    "matches": [rule],
 		    "rulename": rulename,
@@ -94,48 +124,64 @@ function checkContents(tree, rules) {
 		    "max": 1};
 	    }
 	} else {
+	    // Found an element in the rule tree with no rule name or cardinality information
 	    issues.push("Rule without rulename: "+rule);
 	}
     }
-    //console.log("Rule data: ");
-    //console.log(ruledata);
 
-    var elem;
-    var data;
-    var matched;
+    // Now that we have all the rule data collected...
+
+    // ...we loop through the elements in `tree`...
     for(var i=0;i<tree.length;i++) {
 	elem = tree[i];
 	matched = false;
+	// ..and then we loop through the rules to see if this element
+	// matches any of the rules.
 	for(var j in ruledata) {
 	    data = ruledata[j];
 	    for(var k=0;k<data.matches.length;k++) {
 		rule = data.matches[k];
-		if (checkElement(elem, rule)) {
+		if (matchElement(elem, rule)) {
+		    // We found a match, so we are done searching the rules
 		    matched = true;
+		    // Annotate the tree with information about which rule it matched
+		    elem["match"] = {"rulename": data.rulename, "count": data.count};
+		    // Record the fact that we found another match for this rule
 		    data.count = data.count+1;
 		    break;
 		}
 	    }
+	    // If we've found a match, we can stop searching for one
 	    if (matched) break;
 	}
+	// If we get here and no match was found, report it.
 	if (!matched) issues.push("Unable to find a matching rule for "+elem);
     }
 
+    // Now that we've checked each element in `tree` to see if it has a match,
+    // let's check to make sure that each rule had the appropriate number of
+    // matches.
     for(var j in ruledata) {
 	data = ruledata[j];
+	// If a minimum was specified, make sure we met it.
 	if (data.min && data.count<data.min) {
 	    issues.push("Expected at least "+data.min+" matches for rule "+data.rulename+
 			" but found "+data.count);
 	}
+	// If a maximum was specified, make sure we didn't exceed it.
 	if (data.max && data.count>data.max) {
 	    issues.push("Expected at most "+data.max+" matches for rule "+data.rulename+
 			" but found "+data.count);
 	}
     }
+
+    // Return any issues we found.
     return issues;
 }
 
 exports.process = function(tree, rules) {
+    /* Compare tree to rules and collect any issues found */
     var issues = checkContents(tree, rules);
+    /* Return the tree and the issues */
     return (tree, issues);
 }
