@@ -11,17 +11,29 @@ element
   / definition
 
 declaration
-  = quals:qualifier* typename:identifier _ varname:identifier
+  = quals:qualifier* typename:identifier _ varname:identifier mods:modifiers?
     val:assignment dstr:dstring ";" {
     return {
       "element": "declaration",
       "qualifiers": quals,
       "typename": typename,
+      "modifiers": mods,
       "varname": varname,
       "value": val,
       "description": dstr
     };
   }
+
+modification
+  = _ id:identifier _ "=" _ e:expr _ { return [id, e]; }
+
+modifiers
+  = "(" con:(head:modification rest:("," m:modification { return m; })* {
+      var ret = {};
+      rest.push(head);      
+      for(var i=0;i<rest.length;i++) { ret[rest[i][0]] = rest[i][1]; }
+      return ret;
+  }) ")" { return con; }
 
 definition
   = quals:qualifier* name:identifier dstr:dstring _ "{"
