@@ -1,6 +1,7 @@
 var grammar = require('./grammar');
 var fs = require('fs');
 
+exports.verbose = false;
 exports.parse = function(s) {
     try {
 	return grammar.parse(s);
@@ -39,14 +40,36 @@ exports.parseFile = function(s, callback) {
 }
 
 function matchIdentifier(id, pattern) {
-    return id.match(pattern)!=null;
+    if (pattern==="_" || id.match(pattern)!=null) {
+	if (exports.verbose) console.log("matchIdentifier("+id+","+pattern+") -> true");
+	return true;
+    } else {
+	if (exports.verbose) console.log("matchIdentifier("+id+","+pattern+") -> false");
+	return false;
+    }
 }
 
 function matchValue(val, pattern) {
-    if (typeof(val)=="string" && pattern[0]=="$") {
-	return val.match(pattern.slice(1))!=null;
+    if (exports.verbose) console.log("matchValue("+val+","+pattern+")");
+    if (typeof(pattern)=="string" && pattern[0]=="$") {
+	var vtype = typeof(val);
+	var pat = pattern.slice(1);
+	if (exports.verbose) console.log("  comparing vtype, "+vtype+", with pattern, "+pat);
+	if (vtype.match(pat)) {
+	    if (exports.verbose) console.log("    match -> true");
+	    return true;
+	} else {
+	    if (exports.verbose) console.log("    no match -> false");
+	    return false;
+	}
     }
-    return val===pattern;
+    if (val===pattern) {
+	if (exports.verbose) console.log("  identical -> true");
+	return true;
+    } else {
+	if (exports.verbose) console.log("  not identical -> false");
+	return false;
+    }
 }
 
 function matchModifiers(obj, patterns) {
@@ -62,6 +85,7 @@ function matchModifiers(obj, patterns) {
 	}
 	if (!matched) return false;
     }
+    return true;
 }
 
 function matchQualifiers(quals, patterns) {
@@ -80,11 +104,18 @@ function matchQualifiers(quals, patterns) {
 }
 
 function matchDeclaration(elem, rule) {
+    if (exports.verbose) console.log("Comparing declaration "+JSON.stringify(elem)+
+				     " to rule "+JSON.stringify(rule));
     if (!matchIdentifier(elem.typename, rule.typename)) return false;
+    if (exports.verbose) console.log("  -- Types match --");
     if (!matchIdentifier(elem.varname, rule.varname)) return false;
+    if (exports.verbose) console.log("  -- Names match --");
     if (!matchValue(elem.value, rule.value)) return false;
+    if (exports.verbose) console.log("  -- Values match --");
     if (!matchModifiers(elem.mods, rule.mods)) return false;
+    if (exports.verbose) console.log("  -- Modifications match --");
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
+    if (exports.verbose) console.log("  -- Qualifiers match --");
     return [];
 }
 
@@ -147,7 +178,6 @@ function checkContents(tree, rules) {
 		// Cardinality - Optional
 		min = 0;
 		max = 1;
-		ruledata[rulename] = {"rule": rule, "rulename": rulename, "min": 0, "max": 1};
 	    } else {
 		// If none of the above, assume exactly one is required
 		min = 1;
@@ -172,8 +202,8 @@ function checkContents(tree, rules) {
 		    "rulename": rulename,
 		    "count": 0,
 		    "desc": desc,
-		    "min": 1,
-		    "max": 1};
+		    "min": min,
+		    "max": max};
 	    }
 	} else {
 	    // Found an element in the rule tree with no rule name or cardinality information
@@ -195,13 +225,17 @@ function checkContents(tree, rules) {
 		rule = data.matches[k];
 		result = matchElement(elem, rule);
 		// No match found, continue searching
-		if (result==false) continue;
+		if (result===false) {
+		    if (exports.verbose) console.log("!Element match failed, next rule");
+		    continue;
+		}
 
 		// If we get here, we have a match.  But, `result` is a list
 		// of any issues encountered deeper down in the hierarchy.  So
 		// we need to indicate we found a match and include any issues
 		// that were identified...
 
+		if (exports.verbose) console.log("**Found a match for "+JSON.stringify(elem));
 		// Indicate we found a match
 		matched = true;
 		// Annotate the tree with information about which rule it matched
@@ -217,7 +251,8 @@ function checkContents(tree, rules) {
 	    if (matched) break;
 	}
 	// If we get here and no match was found, report it.
-	if (!matched) issues.push("Unable to find a matching rule for "+elem);
+	if (!matched) issues.push("Unable to find a matching rule for element: "+
+				  JSON.stringify(elem));
     }
 
     // Now that we've checked each element in `tree` to see if it has a match,
