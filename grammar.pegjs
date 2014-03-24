@@ -12,7 +12,7 @@ element
 
 declaration
   = quals:qualifier* typename:identifier _ varname:identifier
-    dstr:dstring val:assignment ";" {
+    val:assignment dstr:dstring ";" {
     return {
       "element": "declaration",
       "qualifiers": quals,
@@ -24,7 +24,8 @@ declaration
   }
 
 definition
-  = quals:qualifier* name:identifier dstr:dstring _ "{" _ contents: element* "}" {
+  = quals:qualifier* name:identifier dstr:dstring _ "{"
+    _ contents: (elem:element _ { return elem; })* "}" {
     return {
       "qualifiers": quals,
       "element": "definition",
@@ -45,7 +46,8 @@ qualifier
 
 identifier
   = chars:[a-zA-Z_]+ { return chars.join(""); }
-  / "'" chars:[a-zA-Z_]+ "'" { return chars.join(""); }
+  / "'" chars:[^'\\\0-\x1F\x7f]+ "'" { return chars.join(""); }
+  / "\"" chars:[^"\\\0-\x1F\x7f]+ "\"" { return chars.join(""); }
 
 expr
   = value
