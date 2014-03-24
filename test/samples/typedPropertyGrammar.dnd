@@ -1,0 +1,13 @@
+Real _ "realProperty*";
+Real _ = "$number" "realProperty*";
+Integer _ "intProperty*";
+Integer _ = "$number" "intProperty*";
+String _ "strProperty*";
+String _ = "$string" "strProperty*";
+Boolean _ "boolProperty*";
+Boolean _ = "$boolean" "boolProperty*";
+Object _ "objProperty*";
+Object _ = "$object" "objProperty*";
+
+group _ "^group*" {
+}

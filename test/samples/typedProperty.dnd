@@ -1,0 +1,13 @@
+Real x "Distance to target";
+Integer y = 5;
+
+group A {
+  Boolean z = true;
+}
+
+group B {
+  Object u = {"label": "Voltage"};
+  group C {
+    String w = "hello";
+  }
+}
