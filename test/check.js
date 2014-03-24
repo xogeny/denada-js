@@ -14,7 +14,7 @@ function shouldFail(tree, rules) {
     assert.notEqual(issues.length, 0);
 }
 
-describe("Declaration failures", function() {
+describe("Declaration pattern handling", function() {
     it("should pass literal matches", function (done) {
 	var tree = denada.parse("Real x;");
 	var rules = denada.parse('Real x "realvar";');
@@ -140,15 +140,27 @@ describe("Declaration failures", function() {
     });
 
     describe("Variables", function() {
-	it("should pass varname matches using patterns", function (done) {
+	it("should pass varname matches using wildcards", function (done) {
 	    var tree = denada.parse("Real x;");
 	    var rules = denada.parse('Real _ "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass varname matches using patterns", function (done) {
+	    var tree = denada.parse("Real x;");
+	    var rules = denada.parse('Real \'x|y|z\' "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
 	it("should fail when varnames can't match", function (done) {
 	    var tree = denada.parse("Real x;");
 	    var rules = denada.parse('Real y "realvar";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+	it("should fail when varname patterns don't match", function (done) {
+	    var tree = denada.parse("Real x;");
+	    var rules = denada.parse('Real \'a|b|c\' "realvar";');
 	    shouldFail(tree, rules);
 	    done();
 	});
@@ -161,12 +173,155 @@ describe("Declaration failures", function() {
 	    shouldProcess(tree, rules);
 	    done();
 	});
+	it("should pass value matches type", function (done) {
+	    var tree = denada.parse("Real x = 1;");
+	    var rules = denada.parse('Real x = \"$number\" "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass value matches type wildcard", function (done) {
+	    var tree = denada.parse("Real x = 1;");
+	    var rules = denada.parse('Real x = \"$_\" "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass value matches type pattern", function (done) {
+	    var tree = denada.parse("Real x = 1;");
+	    var rules = denada.parse('Real x = \"$number|$boolean\" "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
 	it("should fail when values can't match", function (done) {
 	    var tree = denada.parse("Real x = 1;");
 	    var rules = denada.parse('Real x = 2 "realvar";');
 	    shouldFail(tree, rules);
 	    done();
 	});
+	it("should fail when value patterns don't match", function (done) {
+	    var tree = denada.parse("Real x = 1;");
+	    var rules = denada.parse('Real x = \"$boolean\" "realvar";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+    });
+    describe("Qualifier", function() {
+	it("should pass when qualifiers match exactly", function(done) {
+	    var tree = denada.parse("@constant Real x;");
+	    var rules = denada.parse('@constant Real x "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass when qualifiers match wildcard", function(done) {
+	    var tree = denada.parse("@constant Real x; @volatile @discrete Real x;");
+	    var rules = denada.parse('@_ Real x "realvar+";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass when qualifiers match patterns", function(done) {
+	    var tree = denada.parse("@constant Real x; @volatile @discrete Real x;");
+	    var rules = denada.parse('@\'constant|volatile|discrete\' Real x "realvar+";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should fail when qualifiers don't match exactly", function(done) {
+	    var tree = denada.parse("@constant Real x;");
+	    var rules = denada.parse('@parameter Real x "realvar";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+	it("should pass when qualifiers don't match patterns", function(done) {
+	    var tree = denada.parse("@continuous Real x; @volatile @discrete Real x;");
+	    var rules = denada.parse('@\'constant|volatile|discrete\' Real x "realvar+";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+    });
+    describe("Modifications", function() {
+	it("should pass when modifications match exactly", function(done) {
+	    var tree = denada.parse("Real x(y=5);");
+	    var rules = denada.parse('Real x(y=5) "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass when modifications match wildcards", function(done) {
+	    var tree = denada.parse("Real x(y=5);");
+	    var rules = denada.parse('Real x(_=\"$_\") "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass when modifications match wildcard and patterns", function(done) {
+	    var tree = denada.parse("Real x(y=5);");
+	    var rules = denada.parse('Real x(_=\"$number\") "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass when modifications match pattern and wildcard", function(done) {
+	    var tree = denada.parse("Real x(y=5);");
+	    var rules = denada.parse('Real x(\'y|z\'=\"$_\") "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass when modifications match pattern and pattern", function(done) {
+	    var tree = denada.parse("Real x(y=5,z=true);");
+	    var rules = denada.parse('Real x(\'y|z\'=\"$number|$boolean\") "realvar";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should fail when modifications don't match exactly", function(done) {
+	    var tree = denada.parse("Real x(y=5);");
+	    var rules = denada.parse('Real x(z=5) "realvar";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+	it("should fail when modifications value pattern doesn't match", function(done) {
+	    var tree = denada.parse("Real x(y=true);");
+	    var rules = denada.parse('Real x(_=\"$number\") "realvar";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+	it("should fail when modifications name pattern doesn't match", function(done) {
+	    var tree = denada.parse("Real x(y=5);");
+	    var rules = denada.parse('Real x(\'y|z\'=\"$_\") "realvar";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+    });
+});
+
+/* Since declarations cover all the possible patterns
+   needed by declarations (i.e. qualifiers and identifiers),
+   those don't need to be tested again here.  Instead, we'll
+   focus on handling of nested contents. */
+describe("Definition pattern handling", function() {
+    it("should pass if nested contents validate", function(done) {
+	var tree = denada.parse("X { Real x; }");
+	var rules = denada.parse('X "X" { Real x "realvar"; }');
+	shouldProcess(tree, rules);
+	done();
+    });
+    it("should check nested contents (and identify nested issues)", function(done) {
+	var tree = denada.parse("X { Real y; }");
+	var rules = denada.parse('X "X" { Real x "realvar"; }');
+	shouldFail(tree, rules);
+	done();
+    });
+    it("should fail if definition qualifiers don't match", function(done) {
+	var tree = denada.parse("@foo X { Real y; }");
+	var rules = denada.parse('X "X" { Real x "realvar"; }');
+	shouldFail(tree, rules);
+	done();
+    });
+    it("should fail if definition names don't match", function(done) {
+	var tree = denada.parse("Y { Real x; }");
+	var rules = denada.parse('X "X" { Real x "realvar"; }');
+	shouldFail(tree, rules);
+	done();
+    });
+    it("should fail if cardinality doesn't match", function(done) {
+	var tree = denada.parse("X { Real x; } X { Real x; }");
+	var rules = denada.parse('X "X" { Real x "realvar"; }');
+	shouldFail(tree, rules);
+	done();
     });
 });
 
@@ -180,28 +335,28 @@ describe("Grammar 1", function() {
 	for(var i=0;i<issues.length;i++) { console.log(issues[i]); }
 	assert.deepEqual(issues, []);
 
-	var x = ptree[0];
+	var x = tree[0];
 	console.log(x);
 	assert.equal(x.varname, "x");
 	assert.equal(x.match.rulename, "realvar");
 	assert.equal(x.match.count, 0);
 
-	var y = ptree[1];
+	var y = tree[1];
 	assert.equal(y.varname, "y");
 	assert.equal(y.match.rulename, "realvar");
 	assert.equal(y.match.count, 1);
 
-	var a_b = ptree[2];
+	var a_b = tree[2];
 	assert.equal(a_b.varname, "a.b");
 	assert.equal(a_b.match.rulename, "intvar");
 	assert.equal(a_b.match.count, 0);
 
-	var c = ptree[3];
+	var c = tree[3];
 	assert.equal(c.varname, "c");
 	assert.equal(c.match.rulename, "boolvar");
 	assert.equal(c.match.count, 0);
 
-	var opt = ptree[4];
+	var opt = tree[4];
 	assert.equal(opt.varname, "opt");
 	assert.equal(opt.match.rulename, "strvar");
 	assert.equal(opt.match.count, 0);

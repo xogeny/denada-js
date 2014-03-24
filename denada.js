@@ -55,6 +55,10 @@ function matchValue(val, pattern) {
 	var vtype = typeof(val);
 	var pat = pattern.slice(1);
 	if (exports.verbose) console.log("  comparing vtype, "+vtype+", with pattern, "+pat);
+	if (pat=="_") {
+	    if (exports.verbose) console.log("    wildcard match -> true");
+	    return true;
+	}
 	if (vtype.match(pat)) {
 	    if (exports.verbose) console.log("    match -> true");
 	    return true;
@@ -77,8 +81,9 @@ function matchModifiers(obj, patterns) {
     for(var op in obj) {
 	matched = false;
 	for(var pp in patterns) {
-	    if (matchIdentifier(op, pp) &&
-		matchValue(obj[op], patterns[pp])) {
+	    var imatch = matchIdentifier(op, pp);
+	    var vmatch = matchValue(obj[op], patterns[pp]);
+	    if (imatch && vmatch) {
 		matched = true;
 		break;
 	    }
@@ -92,7 +97,7 @@ function matchQualifiers(quals, patterns) {
     var matched;
     for(var i=0;i<quals.length;i++) {
 	matched = false;
-	for(var j=0;j<patterns;j++) {
+	for(var j=0;j<patterns.length;j++) {
 	    if (matchIdentifier(quals[i], patterns[j])) {
 		matched = true;
 		break;
@@ -280,5 +285,5 @@ exports.process = function(tree, rules) {
     /* Compare tree to rules and collect any issues found */
     var issues = checkContents(tree, rules);
     /* Return the tree and the issues */
-    return (tree, issues);
+    return issues;
 }
