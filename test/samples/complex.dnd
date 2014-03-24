@@ -6,14 +6,14 @@
 }
 
 interface {
-  panel Foo {
-    parameter x.y.z = {"label": "Z Parameter"};
+  @panel Foo {
+    parameter 'x.y.z' = {"label": "Z Parameter"};
   }
 }
 
 interface "interface*" {
   panel "panel*" {
     parameter '.*' "p_nohints*";
-    parameter '.*' = {"label": string} "p_hints";
+    parameter '.*' = {"label": "string"} "p_hints";
   }
 }

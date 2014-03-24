@@ -14,7 +14,13 @@ exports.parse = function(s) {
 exports.parseFileSync = function(s) {
     var contents;
     contents = fs.readFileSync(s, 'utf8');
-    return grammar.parse(contents);
+    try {
+	return grammar.parse(contents);
+    } catch(e) {
+	throw {
+	    message: "Syntax error on line "+e.line+" (column "+e.column+") of "+s+": "+e.message
+	};
+    }
 }
 
 exports.parseFile = function(s, callback) {
@@ -25,7 +31,9 @@ exports.parseFile = function(s, callback) {
 	    ast = grammar.parse(res);
 	    callback(undefined, ast);
 	} catch(e) {
-	    callback(e);
+	    callback({
+		message: "Syntax error on line "+e.line+" (column "+e.column+") of "+s+": "+e.message
+	    });
 	}
     });
 }
