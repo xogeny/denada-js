@@ -1,7 +1,6 @@
 var grammar = require('./grammar');
 var fs = require('fs');
 
-exports.verbose = false;
 exports.parse = function(s) {
     try {
 	return grammar.parse(s);
@@ -40,54 +39,28 @@ exports.parseFile = function(s, callback) {
 }
 
 function matchIdentifier(id, pattern) {
-    if (pattern==="_" || id.match(pattern)!=null) {
-	if (exports.verbose) console.log("matchIdentifier("+id+","+pattern+") -> true");
-	return true;
-    } else {
-	if (exports.verbose) console.log("matchIdentifier("+id+","+pattern+") -> false");
-	return false;
-    }
+    return pattern==="_" || id.match(pattern)!=null;
 }
 
 function matchValue(val, pattern) {
-    if (exports.verbose) console.log("matchValue("+val+","+pattern+")");
     if (typeof(pattern)=="string" && pattern[0]=="$") {
 	var vtype = typeof(val);
 	var pat = pattern.slice(1);
-	if (exports.verbose) console.log("  comparing vtype, "+vtype+", with pattern, "+pat);
-	if (pat==="_") {
-	    if (exports.verbose) console.log("    wildcard match -> true");
-	    return true;
-	}
-	if (vtype.match(pat)) {
-	    if (exports.verbose) console.log("    match -> true");
-	    return true;
-	} else {
-	    if (exports.verbose) console.log("    no match -> false");
-	    return false;
-	}
+	if (pat==="_") return true;
+	if (vtype.match(pat)) return true;
+	else return false;
     }
-    if (val===pattern) {
-	if (exports.verbose) console.log("  identical -> true");
-	return true;
-    } else {
-	if (exports.verbose) console.log("  not identical -> false");
-	return false;
-    }
+    if (val===pattern) return true;
+    else return false;
 }
 
 function matchModifiers(obj, patterns) {
     var matched;
-    console.log("Checking "+JSON.stringify(obj)+" against "+JSON.stringify(patterns));
     for(var op in obj) {
-	console.log("  Considering key "+op);
 	matched = false;
 	for(var pp in patterns) {
-	    console.log("    Consider pattern "+pp);
 	    var imatch = matchIdentifier(op, pp);
 	    var vmatch = matchValue(obj[op], patterns[pp]);
-	    console.log("      matchIdentifier("+op+","+pp+") = "+imatch);
-	    console.log("      matchValue("+obj[op]+","+patterns[pp]+") = "+vmatch);
 	    if (imatch && vmatch) {
 		matched = true;
 		break;
@@ -114,18 +87,11 @@ function matchQualifiers(quals, patterns) {
 }
 
 function matchDeclaration(elem, rule) {
-    if (exports.verbose) console.log("Comparing declaration "+JSON.stringify(elem)+
-				     " to rule "+JSON.stringify(rule));
     if (!matchIdentifier(elem.typename, rule.typename)) return false;
-    if (exports.verbose) console.log("  -- Types match --");
     if (!matchIdentifier(elem.varname, rule.varname)) return false;
-    if (exports.verbose) console.log("  -- Names match --");
     if (!matchValue(elem.value, rule.value)) return false;
-    if (exports.verbose) console.log("  -- Values match --");
     if (!matchModifiers(elem.modifiers, rule.modifiers)) return false;
-    if (exports.verbose) console.log("  -- Modifications match --");
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
-    if (exports.verbose) console.log("  -- Qualifiers match --");
     return [];
 }
 
@@ -235,17 +201,13 @@ function checkContents(tree, rules) {
 		rule = data.matches[k];
 		result = matchElement(elem, rule);
 		// No match found, continue searching
-		if (result===false) {
-		    if (exports.verbose) console.log("!Element match failed, next rule");
-		    continue;
-		}
+		if (result===false) continue;
 
 		// If we get here, we have a match.  But, `result` is a list
 		// of any issues encountered deeper down in the hierarchy.  So
 		// we need to indicate we found a match and include any issues
 		// that were identified...
 
-		if (exports.verbose) console.log("**Found a match for "+JSON.stringify(elem));
 		// Indicate we found a match
 		matched = true;
 		// Annotate the tree with information about which rule it matched
