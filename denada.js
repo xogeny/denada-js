@@ -43,17 +43,40 @@ function matchIdentifier(id, pattern) {
 }
 
 function matchValue(val, pattern) {
-    return true; // TODO
+    if (typeof(val)=="string" && pattern[0]=="$") {
+	return val.match(pattern.slice(1))!=null;
+    }
+    return val===pattern;
 }
 
 function matchModifiers(obj, patterns) {
-    return true; // TODO
+    var matched;
+    for(var op in obj) {
+	matched = false;
+	for(var pp in patterns) {
+	    if (matchIdentifier(op, pp) &&
+		matchValue(obj[op], patterns[pp])) {
+		matched = true;
+		break;
+	    }
+	}
+	if (!matched) return false;
+    }
 }
 
 function matchQualifiers(quals, patterns) {
+    var matched;
     for(var i=0;i<quals.length;i++) {
+	matched = false;
+	for(var j=0;j<patterns;j++) {
+	    if (matchIdentifier(quals[i], patterns[j])) {
+		matched = true;
+		break;
+	    }
+	}
+	if (!matched) return false;
     }
-    return true; // TODO
+    return true;
 }
 
 function matchDeclaration(elem, rule) {
@@ -68,8 +91,7 @@ function matchDeclaration(elem, rule) {
 function matchDefinition(elem, rule) {
     if (!matchIdentifier(elem.name, rule.name)) return false;
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
-    // TODO: Contents
-    return [];
+    return checkContents(elem.contents, rule.contents);
 }
 
 function matchElement(elem, rule) {
