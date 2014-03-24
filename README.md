@@ -151,6 +151,152 @@ could even do this:
 }
 ```
 
+With just this simple grammar, we've created a parser for a DSL that
+can parse our sample asset list above and flag errors.  The resulting
+abstract syntax tree is just a JSON tree:
+
+```
+[
+  {
+    "element": "definition",
+    "qualifiers": [
+      "printer"
+    ],
+    "name": "ABC",
+    "contents": [
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "location",
+        "value": "By my desk",
+        "description": null,
+        "match": {
+          "rulename": "location",
+          "count": 0
+        }
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "model",
+        "value": "HP 8860",
+        "description": null,
+        "match": {
+          "rulename": "model",
+          "count": 0
+        }
+      }
+    ],
+    "description": null,
+    "match": {
+      "rulename": "printer",
+      "count": 0
+    }
+  },
+  {
+    "element": "definition",
+    "qualifiers": [
+      "printer"
+    ],
+    "name": "DEF",
+    "contents": [
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "location",
+        "value": "By my desk",
+        "description": null,
+        "match": {
+          "rulename": "location",
+          "count": 0
+        }
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "model",
+        "value": "HP 8860",
+        "description": null,
+        "match": {
+          "rulename": "model",
+          "count": 0
+        }
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "networkName",
+        "value": "PrinterDEF",
+        "description": null,
+        "match": {
+          "rulename": "name",
+          "count": 0
+        }
+      }
+    ],
+    "description": null,
+    "match": {
+      "rulename": "printer",
+      "count": 1
+    }
+  },
+  {
+    "element": "definition",
+    "qualifiers": [
+      "computer"
+    ],
+    "name": "XYZ",
+    "contents": [
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "location",
+        "value": "On my desk",
+        "description": null,
+        "match": {
+          "rulename": "location",
+          "count": 0
+        }
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "modifiers": null,
+        "varname": "model",
+        "value": "Mac Book Air",
+        "description": null,
+        "match": {
+          "rulename": "model",
+          "count": 0
+        }
+      }
+    ],
+    "description": null,
+    "match": {
+      "rulename": "computer",
+      "count": 0
+    }
+  }
+]
+```
+
+We can then walk this tree and extract the information we need.  Note
+how the tree has been marked up with information about the rule that
+each node matched?
+
 ## Pattern Matching
 
 ...
