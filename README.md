@@ -65,6 +65,8 @@ humans to read.  It also includes a richer data model.
 ## An Example
 
 To demonstrate how Denada works, let's work through a simple example.
+Imagine I'm a system administator and I need a file format to list all
+the assets in the company.
 
 The generic syntax of Denada is simple.  There are two things you can
 express in Denada.  One looks like a variable declaration and the
@@ -72,19 +74,87 @@ other expresses nested structure (which can contain instances of these
 same two things).  For example, this is valid Denada code:
 
 ```
-Real x;
-group {
-  Real y;
-  Integer z;
+printer ABC {
+   set location = "By my desk";
+   set model = "HP 8860";
 }
 ```
 
 This doesn't really *mean* anything, but it conforms to the required
 syntax.  Although this might be useful as is, the real use case for
-Denada is defining a grammar the restricts what is permitted.  Let's
-imagine we wanted to define some kind of nested property file format.
-A sample of our property file might look like this:
+Denada is defining a grammar the restricts what is permitted.  That's
+because this is also completely legal:
 
 ```
-property x;
-property y = 5;
+aardvark ABC {
+   set location = "By my desk";
+   set order = "Tubulidentata";
+}
+```
+
+So in this case, we want to restrict ourselves (initially) to
+cataloging printers.  To do this, we specify a grammar for our assets
+file.  Initially, our grammar could look like this:
+
+```
+printer _ "printer*" {
+  set location = "$string" "location";
+  set model = "$string" "model";
+  set networkName = "$string" "name?";
+}
+```
+
+Note how this looks almost exactly like our original input text?  That
+is because grammars in Denada are Denada files.  They just have some
+special annotations (not syntax!).  In this case, the "name" of the
+printer is given as just `_`.  This is a wildcard in Denada means "any
+identifier".  Also note the "descriptive string" following the printer
+definition, `"printer*"`.  That means that this defines the `printer`
+rule and the start indicates we can have zero or more of them in our
+file.
+
+Furthermore, this grammar defines the contents of a `printer`
+specification.  It shows that there can be three lines inside a
+printer definition.  The first is the `location` of the printer.  This
+is mandatory because the rule name, `"location"` has no cardinality
+specified.  Similarly, we also have a mandatory `model` property.
+Finally, we have an optional `networkName` property.  We know it is
+optional because the rule name `"name?"` ends with a `?`.
+
+By defining the grammar in this way, we specify precisely what can be
+included in the Denada file.  But let's not limit ourselves to
+printers.  Assume we want to list the computers in the company too.
+We would could simply create a new rule for computers, *e.g.,*
+
+```
+printer _ "printer*" {
+  set location = "$string" "location";
+  set model = "$string" "model";
+  set networkName = "$string" "name?";
+}
+
+computer _ "computer*" {
+  set location = "$string" "location";
+  set model = "$string" "model";
+  set networkName = "$string" "name?";
+}
+```
+
+In this case, the contents of these definitions are the same, so we
+could even do this:
+
+```
+'printer|computer' _ "asset*" {
+  set location = "$string" "location";
+  set model = "$string" "model";
+  set networkName = "$string" "name?";
+}
+```
+
+## Pattern Matching
+
+...
+
+## Querying
+
+...

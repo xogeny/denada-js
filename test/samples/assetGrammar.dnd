@@ -7,4 +7,5 @@ printer _ "printer*" {
 computer _ "computer*" {
   set location = "$string" "location";
   set model = "$string" "model";
+  set networkName = "$string" "name?";
 }
