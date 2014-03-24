@@ -14,6 +14,12 @@ function shouldFail(tree, rules) {
     assert.notEqual(issues.length, 0);
 }
 
+function ruleInfo(node, name, count) {
+    assert(node.hasOwnProperty("match"), "Node is missing match information");
+    assert.equal(node.match.rulename, name);
+    assert.equal(node.match.count, count);
+}
+
 describe("Declaration pattern handling", function() {
     it("should pass literal matches", function (done) {
 	var tree = denada.parse("Real x;");
@@ -286,6 +292,39 @@ describe("Declaration pattern handling", function() {
 	    done();
 	});
     });
+
+    describe("Special string pattern handling", function() {
+	it("should pass if string value matches literal", function(done) {
+	    var tree = denada.parse('String z = "hello";');
+	    var rules = denada.parse('String z = "hello" "strvar*";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass if string value matches wildcard", function(done) {
+	    var tree = denada.parse('String z = "hello";');
+	    var rules = denada.parse('String z = "_" "strvar*";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should pass if string value matches pattern", function(done) {
+	    var tree = denada.parse('String z = "foo";');
+	    var rules = denada.parse('String z = "foo|bar" "strvar*";');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+	it("should fail if string value doesn't matches literal", function(done) {
+	    var tree = denada.parse('String z = "hello";');
+	    var rules = denada.parse('String y = "hello" "strvar*";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+	it("should pass if string value matches pattern", function(done) {
+	    var tree = denada.parse('String z = "fuz";');
+	    var rules = denada.parse('String z = "foo|bar" "strvar*";');
+	    shouldFail(tree, rules);
+	    done();
+	});
+    });
 });
 
 /* Since declarations cover all the possible patterns
@@ -325,43 +364,59 @@ describe("Definition pattern handling", function() {
     });
 });
 
-/*
 describe("Grammar 1", function() {
-    it("should successfully check g1_test1", function(done) {
+    var rules = denada.parseFileSync("test/samples/grammar1.dnd");
+    it("should not find any issues", function(done) {
 	var tree = denada.parseFileSync("test/samples/g1_test1.dnd");
-	var rules = denada.parseFileSync("test/samples/grammar1.dnd");
-	var issues = denada.process(tree, rules);
-
-	for(var i=0;i<issues.length;i++) { console.log(issues[i]); }
-	assert.deepEqual(issues, []);
+	shouldProcess(tree, rules);
+	done();
+    });
+    it("should correctly annotate x", function(done) {
+	var tree = denada.parseFileSync("test/samples/g1_test1.dnd");
+	denada.process(tree, rules);
 
 	var x = tree[0];
-	console.log(x);
 	assert.equal(x.varname, "x");
-	assert.equal(x.match.rulename, "realvar");
-	assert.equal(x.match.count, 0);
+	ruleInfo(x, "realvar", 0);
+	done();
+    });
+    it("should correctly annotate y", function(done) {
+	var tree = denada.parseFileSync("test/samples/g1_test1.dnd");
+	denada.process(tree, rules);
 
 	var y = tree[1];
 	assert.equal(y.varname, "y");
-	assert.equal(y.match.rulename, "realvar");
-	assert.equal(y.match.count, 1);
+	ruleInfo(y, "realvar", 1);
+	done();
+    });
+
+    it("should correctly annotate a_b", function(done) {
+	var tree = denada.parseFileSync("test/samples/g1_test1.dnd");
+	denada.process(tree, rules);
 
 	var a_b = tree[2];
 	assert.equal(a_b.varname, "a.b");
-	assert.equal(a_b.match.rulename, "intvar");
-	assert.equal(a_b.match.count, 0);
+	ruleInfo(a_b, "intvar", 0);
+	done();
+    });
+
+    it("should correctly annotate c", function(done) {
+	var tree = denada.parseFileSync("test/samples/g1_test1.dnd");
+	denada.process(tree, rules);
 
 	var c = tree[3];
-	assert.equal(c.varname, "c");
-	assert.equal(c.match.rulename, "boolvar");
-	assert.equal(c.match.count, 0);
+	assert.equal(c.varname, "correct");
+	ruleInfo(c, "boolvar", 0);
+	done();
+    });
+
+    it("should correctly annotate opt", function(done) {
+	var tree = denada.parseFileSync("test/samples/g1_test1.dnd");
+	denada.process(tree, rules);
 
 	var opt = tree[4];
 	assert.equal(opt.varname, "opt");
-	assert.equal(opt.match.rulename, "strvar");
-	assert.equal(opt.match.count, 0);
-	
+	ruleInfo(opt, "strvar", 0);
 	done();
     });
 });
-*/

@@ -43,15 +43,30 @@ function matchIdentifier(id, pattern) {
 }
 
 function matchValue(val, pattern) {
-    if (typeof(pattern)=="string" && pattern[0]=="$") {
-	var vtype = typeof(val);
-	var pat = pattern.slice(1);
-	if (pat==="_") return true;
-	if (vtype.match(pat)) return true;
-	else return false;
+    // If the pattern is a string then we must handle some special cases
+    if (typeof(pattern)=="string") {
+	// If the pattern starts with $, the rest is a pattern to match against
+	// the type of the value
+	if (pattern[0]=="$") {
+	    var vtype = typeof(val);
+	    var pat = pattern.slice(1);
+	    if (pat==="_") return true;
+	    if (vtype.match(pat)) return true;
+	    return false;
+	} else if (typeof(val)=="string") {
+	    // If the value is a string, then we treat the pattern
+	    // as a regexp or wildcard
+	    if (pattern==="_") return true;
+	    if (val.match(pattern)) return true;
+	    return false;
+	} else {
+	    // We get here if the pattern is a string but the value
+	    // is not.  In that case, no match is possible
+	    return false;
+	}
     }
-    if (val===pattern) return true;
-    else return false;
+    // If pattern isn't a string, then just check for literal equality
+    return val===pattern;
 }
 
 function matchModifiers(obj, patterns) {
