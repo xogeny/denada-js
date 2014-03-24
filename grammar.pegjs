@@ -33,7 +33,7 @@ modifiers
       rest.push(head);      
       for(var i=0;i<rest.length;i++) { ret[rest[i][0]] = rest[i][1]; }
       return ret;
-  }) ")" { return con; }
+  })? ")" { return con ? con : {}; }
 
 definition
   = quals:qualifier* name:identifier dstr:dstring _ "{"

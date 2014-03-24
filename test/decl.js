@@ -12,6 +12,16 @@ describe("Checking basic syntax", function() {
 	assert.equal(ast.description, undefined);
 	done();
     });
+    it("should parse declarations with empty modifiers", function(done) {
+	var ast = denada.parse("Real x();")[0];
+	assert.equal(ast.element, "declaration");
+	assert.deepEqual(ast.qualifiers, []);
+	assert.deepEqual(ast.modifiers, {});
+	assert.equal(ast.typename, "Real");
+	assert.equal(ast.varname, "x");
+	assert.equal(ast.description, undefined);
+	done();
+    });
     it("should parse declarations with modifiers", function(done) {
 	var ast = denada.parse("Real x(y=5,z=true);")[0];
 	assert.equal(ast.element, "declaration");

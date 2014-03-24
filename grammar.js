@@ -64,7 +64,7 @@ module.exports = (function() {
           },
         peg$c15 = ")",
         peg$c16 = { type: "literal", value: ")", description: "\")\"" },
-        peg$c17 = function(con) { return con; },
+        peg$c17 = function(con) { return con ? con : {}; },
         peg$c18 = "{",
         peg$c19 = { type: "literal", value: "{", description: "\"{\"" },
         peg$c20 = function(elem) { return elem; },
@@ -579,6 +579,9 @@ module.exports = (function() {
         } else {
           peg$currPos = s2;
           s2 = peg$c1;
+        }
+        if (s2 === peg$FAILED) {
+          s2 = peg$c2;
         }
         if (s2 !== peg$FAILED) {
           if (input.charCodeAt(peg$currPos) === 41) {
