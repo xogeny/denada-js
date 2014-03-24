@@ -293,9 +293,14 @@ abstract syntax tree is just a JSON tree:
 ]
 ```
 
-We can then walk this tree and extract the information we need.  Note
-how the tree has been marked up with information about the rule that
-each node matched?
+We can then walk this tree and extract the information we need.  By
+using the grammar, we know exactly what content to expect in the
+abstract syntax tree so we can minimize the amount of checking we need
+to do when walking it.
+
+Note how the tree has been marked up with information about the rule
+that each node matched?  As we'll see in a minute, this will allow us
+to quickly query for matches.
 
 ## Pattern Matching
 
