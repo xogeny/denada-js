@@ -53,7 +53,7 @@ describe("Checking basic syntax", function() {
 	done();
     });
     it("should parse qualified declarations", function(done) {
-	var ast = denada.parse("@foo @'bar' Real x;")[0];
+	var ast = denada.parse("foo 'bar' Real x;")[0];
 	assert.equal(ast.element, "declaration");
 	assert.deepEqual(ast.qualifiers, ["foo", "bar"]);
 	assert.equal(ast.typename, "Real");

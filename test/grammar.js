@@ -4,12 +4,12 @@ var assert = require('assert');
 
 describe("Grammar", function() {
     it("should be able to parse a grammar declaration", function(done) {
-	var ast = denada.parse('parameter ".*" "p_nohints*";')[0];
+	var ast = denada.parse('parameter \'.*\' "p_nohints*";')[0];
 	assert.equal(ast.element, "declaration");
 	done();
     });
     it("should be able to parse a grammar declaration w/assignment", function(done) {
-	var ast = denada.parse('parameter ".*" = {"label": "string"} "p_hints*";')[0];
+	var ast = denada.parse('parameter \'.*\' = {"label": "string"} "p_hints*";')[0];
 	assert.equal(ast.element, "declaration");
 	done();
     });
@@ -60,8 +60,8 @@ describe("Grammar", function() {
 	var ast = denada.parse('\
 interface "interface*" {\
   panel "panel*" {\
-    parameter ".*" "p_nohints*";\
-    parameter ".*" = {"label": "string"} "p_hints*";\
+    parameter \'.*\' "p_nohints*";\
+    parameter \'.*\' = {"label": "string"} "p_hints*";\
   }\
 }\
 ')[0];

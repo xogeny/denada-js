@@ -88,5 +88,3 @@ A sample of our property file might look like this:
 ```
 property x;
 property y = 5;
-@group X {
-}

@@ -227,32 +227,32 @@ describe("Declaration pattern handling", function() {
     });
     describe("Qualifier", function() {
 	it("should pass when qualifiers match exactly", function(done) {
-	    var tree = denada.parse("@constant Real x;");
-	    var rules = denada.parse('@constant Real x "realvar";');
+	    var tree = denada.parse("constant Real x;");
+	    var rules = denada.parse('constant Real x "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
 	it("should pass when qualifiers match wildcard", function(done) {
-	    var tree = denada.parse("@constant Real x; @volatile @discrete Real x;");
-	    var rules = denada.parse('@_ Real x "realvar+";');
+	    var tree = denada.parse("constant Real x; volatile discrete Real x;");
+	    var rules = denada.parse('_ Real x "realvar+";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
 	it("should pass when qualifiers match patterns", function(done) {
-	    var tree = denada.parse("@constant Real x; @volatile @discrete Real x;");
-	    var rules = denada.parse('@\'constant|volatile|discrete\' Real x "realvar+";');
+	    var tree = denada.parse("constant Real x; volatile discrete Real x;");
+	    var rules = denada.parse('\'constant|volatile|discrete\' Real x "realvar+";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
 	it("should fail when qualifiers don't match exactly", function(done) {
-	    var tree = denada.parse("@constant Real x;");
-	    var rules = denada.parse('@parameter Real x "realvar";');
+	    var tree = denada.parse("constant Real x;");
+	    var rules = denada.parse('parameter Real x "realvar";');
 	    shouldFail(tree, rules);
 	    done();
 	});
 	it("should pass when qualifiers don't match patterns", function(done) {
-	    var tree = denada.parse("@continuous Real x; @volatile @discrete Real x;");
-	    var rules = denada.parse('@\'constant|volatile|discrete\' Real x "realvar+";');
+	    var tree = denada.parse("continuous Real x; volatile discrete Real x;");
+	    var rules = denada.parse('\'constant|volatile|discrete\' Real x "realvar+";');
 	    shouldFail(tree, rules);
 	    done();
 	});

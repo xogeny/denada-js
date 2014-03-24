@@ -8,9 +8,23 @@ start
 
 element
   = declaration
-  / definition
+  / definitionq
 
 declaration
+  = _ ids:(id:identifier _ { return id; })+ mods:modifiers?
+    val:assignment dstr:dstring ";" _ {
+    return {
+      "element": "declaration",
+      "qualifiers": ids.slice(0, ids.length-2),
+      "typename": ids.slice(-2, -1)[0],
+      "modifiers": mods,
+      "varname": ids.slice(-1)[0],
+      "value": val,
+      "description": dstr
+    };
+  }
+
+declarationq
   = quals:qualifier* typename:identifier _ varname:identifier mods:modifiers?
     val:assignment dstr:dstring ";" _ {
     return {
@@ -36,6 +50,18 @@ modifiers
   })? ")" { return con ? con : {}; }
 
 definition
+  = ids:(id:identifier _ { return id; })+ dstr:dstring _ "{"
+    _ contents: (elem:element _ { return elem; })* "}" _ {
+    return {
+      "element": "definition",
+      "qualifiers": ids.slice(0, ids.length-1),
+      "name": ids.slice(-1),
+      "contents": contents,
+      "description": dstr
+    };
+  }
+
+definitionq
   = quals:qualifier* name:identifier dstr:dstring _ "{"
     _ contents: (elem:element _ { return elem; })* "}" _ {
     return {
@@ -59,7 +85,6 @@ qualifier
 identifier
   = chars:[a-zA-Z_]+ { return chars.join(""); }
   / "'" chars:[^'\\\0-\x1F\x7f]+ "'" { return chars.join(""); }
-  / "\"" chars:[^"\\\0-\x1F\x7f]+ "\"" { return chars.join(""); }
 
 expr
   = value

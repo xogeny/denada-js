@@ -1,7 +1,7 @@
 @class X {
   public {
     Real x "A variable";
-    @discrete Integer y;
+    discrete Integer y;
   }
 }
 
