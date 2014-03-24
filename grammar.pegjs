@@ -12,7 +12,7 @@ element
 
 declaration
   = quals:qualifier* typename:identifier _ varname:identifier mods:modifiers?
-    val:assignment dstr:dstring ";" {
+    val:assignment dstr:dstring ";" _ {
     return {
       "element": "declaration",
       "qualifiers": quals,
@@ -37,10 +37,10 @@ modifiers
 
 definition
   = quals:qualifier* name:identifier dstr:dstring _ "{"
-    _ contents: (elem:element _ { return elem; })* "}" {
+    _ contents: (elem:element _ { return elem; })* "}" _ {
     return {
-      "qualifiers": quals,
       "element": "definition",
+      "qualifiers": quals,
       "name": name,
       "contents": contents,
       "description": dstr
