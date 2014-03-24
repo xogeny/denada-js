@@ -1,4 +1,4 @@
-@class X {
+class X {
   public {
     Real x "A variable";
     discrete Integer y;
@@ -6,7 +6,7 @@
 }
 
 interface {
-  @panel Foo {
+  panel Foo {
     parameter 'x.y.z' = {"label": "Z Parameter"};
   }
 }

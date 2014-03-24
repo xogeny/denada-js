@@ -8,7 +8,7 @@ start
 
 element
   = declaration
-  / definitionq
+  / definition
 
 declaration
   = _ ids:(id:identifier _ { return id; })+ mods:modifiers?
@@ -55,7 +55,7 @@ definition
     return {
       "element": "definition",
       "qualifiers": ids.slice(0, ids.length-1),
-      "name": ids.slice(-1),
+      "name": ids.slice(-1)[0],
       "contents": contents,
       "description": dstr
     };

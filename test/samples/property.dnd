@@ -1,11 +1,11 @@
 property x "Distance to target";
 property y = 5;
-@group A {
+group A {
   property z = true;
 }
-@group B {
+group B {
   property u = {"label": "Voltage"};
-  @group C {
+  group C {
     property w = "hello";
   }
 }

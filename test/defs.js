@@ -4,7 +4,7 @@ var assert = require('assert');
 
 describe("Checking definition syntax", function() {
     it("should parse qualified empty definitions", function(done) {
-	var ast = denada.parse("@class X {}")[0];
+	var ast = denada.parse("class X {}")[0];
 	assert.equal(ast.element, "definition");
 	assert.deepEqual(ast.qualifiers, ["class"]);
 	assert.equal(ast.name, "X");

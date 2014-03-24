@@ -360,7 +360,7 @@ describe("Definition pattern handling", function() {
 	done();
     });
     it("should fail if definition qualifiers don't match", function(done) {
-	var tree = denada.parse("@foo X { Real y; }");
+	var tree = denada.parse("foo X { Real y; }");
 	var rules = denada.parse('X "X" { Real x "realvar"; }');
 	shouldFail(tree, rules);
 	done();

@@ -86,7 +86,7 @@ module.exports = (function() {
             return {
               "element": "definition",
               "qualifiers": ids.slice(0, ids.length-1),
-              "name": ids.slice(-1),
+              "name": ids.slice(-1)[0],
               "contents": contents,
               "description": dstr
             };
@@ -388,7 +388,7 @@ module.exports = (function() {
 
       s0 = peg$parsedeclaration();
       if (s0 === peg$FAILED) {
-        s0 = peg$parsedefinitionq();
+        s0 = peg$parsedefinition();
       }
 
       return s0;
