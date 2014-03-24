@@ -1,4 +1,3 @@
-/* Test some simple sample source */
 var denada = require('../denada');
 var assert = require('assert');
 

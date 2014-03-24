@@ -1,0 +1,8 @@
+Real _ "realvar*";
+Real _ = "$number" "realvar*";
+Integer _ "intvar*";
+Integer _ = "$integer" "intvar*";
+Boolean _ "boolvar*";
+Boolean _ = "$boolean" "boolvar*";
+String _ "strvar*";
+String _ = "opt1|opt2|opt3" "strvar*";

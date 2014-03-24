@@ -1,0 +1,8 @@
+Real x;
+Real y = 25.0;
+
+Integer 'a.b' = 5;
+
+Boolean correct = true;
+
+String opt = "opt1";
