@@ -28,6 +28,15 @@ describe("Declaration pattern handling", function() {
 	done();
     });
 
+    describe("Recursive rules", function() {
+	it("should allow recursive rules", function(done) {
+	    var tree = denada.parse("X { X {} }");
+	    var rules = denada.parse('X "^X*" { }');
+	    shouldProcess(tree, rules);
+	    done();
+	});
+    });
+
     describe("Cardinality", function() {
 	describe("Zero or more", function() {
 	    var rules = denada.parse('_ x "realvar*";');

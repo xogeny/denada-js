@@ -110,17 +110,21 @@ function matchDeclaration(elem, rule) {
     return [];
 }
 
-function matchDefinition(elem, rule) {
+function matchDefinition(elem, rule, rules) {
     if (!matchIdentifier(elem.name, rule.name)) return false;
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
-    return checkContents(elem.contents, rule.contents);
+    if (rule.description[0]=="^") {
+	return checkContents(elem.contents, rules);
+    } else {
+	return checkContents(elem.contents, rule.contents);
+    }
 }
 
-function matchElement(elem, rule) {
+function matchElement(elem, rule, rules) {
     // If these aren't even the same type of element, they don't match
     if (elem.element!==rule.element) return false;
     if (elem.element=="declaration") return matchDeclaration(elem, rule);
-    if (elem.element=="definition") return matchDefinition(elem, rule);
+    if (elem.element=="definition") return matchDefinition(elem, rule, rules);
     throw "Unexpected element type: "+elem.element;
 }
 
@@ -214,7 +218,7 @@ function checkContents(tree, rules) {
 	    data = ruledata[j];
 	    for(var k=0;k<data.matches.length;k++) {
 		rule = data.matches[k];
-		result = matchElement(elem, rule);
+		result = matchElement(elem, rule, rules);
 		// No match found, continue searching
 		if (result===false) continue;
 
