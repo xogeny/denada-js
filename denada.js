@@ -110,21 +110,17 @@ function matchDeclaration(elem, rule) {
     return [];
 }
 
-function matchDefinition(elem, rule, rules) {
+function matchDefinition(elem, rule, context) {
     if (!matchIdentifier(elem.name, rule.name)) return false;
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
-    if (rule.description[0]=="^") {
-	return checkContents(elem.contents, rules);
-    } else {
-	return checkContents(elem.contents, rule.contents);
-    }
+    return checkContents(elem.contents, context || rule.contents);
 }
 
-function matchElement(elem, rule, rules) {
+function matchElement(elem, rule, context) {
     // If these aren't even the same type of element, they don't match
     if (elem.element!==rule.element) return false;
     if (elem.element=="declaration") return matchDeclaration(elem, rule);
-    if (elem.element=="definition") return matchDefinition(elem, rule, rules);
+    if (elem.element=="definition") return matchDefinition(elem, rule, context);
     throw "Unexpected element type: "+elem.element;
 }
 
@@ -137,6 +133,8 @@ function checkContents(tree, rules) {
     var desc;
     var rulename;
     var endswith;
+    var startswith;
+    var recursive;
     var min;
     var max;
     var elem;
@@ -161,24 +159,34 @@ function checkContents(tree, rules) {
 	if (desc) {
 	    // Extract the last character in the description
 	    endswith = desc.slice(-1);
-	    // Assume the rule name is all characters but the last (general case)
-	    rulename = desc.slice(0,desc.length-1);
+	    startswith = desc[0];
+
+	    // Determine if this is a recursive rule
+	    if (startswith=="^") {
+		recursive = true;
+		rulename = desc.slice(1,desc.length);
+	    } else {
+		recursive = false;
+		rulename = desc;
+	    }
+
 	    if (endswith=="*") {
 		// Cardinality - Zero or more
 		min = 0;
+		rulename = rulename.slice(0,rulename.length-1);;
 	    } else if (endswith=="+") {
 		// Cardinality - One or more
 		min = 1;
+		rulename = rulename.slice(0,rulename.length-1);;
 	    } else if (endswith=="?") {
 		// Cardinality - Optional
 		min = 0;
 		max = 1;
+		rulename = rulename.slice(0,rulename.length-1);;
 	    } else {
 		// If none of the above, assume exactly one is required
 		min = 1;
 		max = 1;
-		// Include last character in the rulename
-		rulename = desc;
 	    }
 
 	    // Check to see if we already have a rule with this name...
@@ -194,6 +202,7 @@ function checkContents(tree, rules) {
 		// ...if not, initialize the rule data for this rule
 		ruledata[rulename] = {
 		    "matches": [rule],
+		    "recursive": recursive,
 		    "rulename": rulename,
 		    "count": 0,
 		    "desc": desc,
@@ -218,7 +227,7 @@ function checkContents(tree, rules) {
 	    data = ruledata[j];
 	    for(var k=0;k<data.matches.length;k++) {
 		rule = data.matches[k];
-		result = matchElement(elem, rule, rules);
+		result = matchElement(elem, rule, data.recursive ? rules : null);
 		// No match found, continue searching
 		if (result===false) continue;
 

@@ -35,6 +35,12 @@ describe("Declaration pattern handling", function() {
 	    shouldProcess(tree, rules);
 	    done();
 	});
+	it("should not allow recursive patterns if not explicitly specified", function(done) {
+	    var tree = denada.parse("X { X {} }");
+	    var rules = denada.parse('X "X*" { }');
+	    shouldFail(tree, rules);
+	    done();
+	});
     });
 
     describe("Cardinality", function() {
