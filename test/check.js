@@ -187,7 +187,7 @@ describe("Declaration pattern handling", function() {
 	});
 	it("should pass value matches type pattern", function (done) {
 	    var tree = denada.parse("Real x = 1;");
-	    var rules = denada.parse('Real x = \"$number|$boolean\" "realvar";');
+	    var rules = denada.parse('Real x = \"$number|boolean\" "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
@@ -263,7 +263,7 @@ describe("Declaration pattern handling", function() {
 	});
 	it("should pass when modifications match pattern and pattern", function(done) {
 	    var tree = denada.parse("Real x(y=5,z=true);");
-	    var rules = denada.parse('Real x(\'y|z\'=\"$number|$boolean\") "realvar";');
+	    var rules = denada.parse('Real x(\'y|z\'=\"$number|boolean\") "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
@@ -280,7 +280,7 @@ describe("Declaration pattern handling", function() {
 	    done();
 	});
 	it("should fail when modifications name pattern doesn't match", function(done) {
-	    var tree = denada.parse("Real x(y=5);");
+	    var tree = denada.parse("Real x(a=5);");
 	    var rules = denada.parse('Real x(\'y|z\'=\"$_\") "realvar";');
 	    shouldFail(tree, rules);
 	    done();

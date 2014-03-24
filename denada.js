@@ -55,7 +55,7 @@ function matchValue(val, pattern) {
 	var vtype = typeof(val);
 	var pat = pattern.slice(1);
 	if (exports.verbose) console.log("  comparing vtype, "+vtype+", with pattern, "+pat);
-	if (pat=="_") {
+	if (pat==="_") {
 	    if (exports.verbose) console.log("    wildcard match -> true");
 	    return true;
 	}
@@ -78,11 +78,16 @@ function matchValue(val, pattern) {
 
 function matchModifiers(obj, patterns) {
     var matched;
+    console.log("Checking "+JSON.stringify(obj)+" against "+JSON.stringify(patterns));
     for(var op in obj) {
+	console.log("  Considering key "+op);
 	matched = false;
 	for(var pp in patterns) {
+	    console.log("    Consider pattern "+pp);
 	    var imatch = matchIdentifier(op, pp);
 	    var vmatch = matchValue(obj[op], patterns[pp]);
+	    console.log("      matchIdentifier("+op+","+pp+") = "+imatch);
+	    console.log("      matchValue("+obj[op]+","+patterns[pp]+") = "+vmatch);
 	    if (imatch && vmatch) {
 		matched = true;
 		break;
@@ -117,7 +122,7 @@ function matchDeclaration(elem, rule) {
     if (exports.verbose) console.log("  -- Names match --");
     if (!matchValue(elem.value, rule.value)) return false;
     if (exports.verbose) console.log("  -- Values match --");
-    if (!matchModifiers(elem.mods, rule.mods)) return false;
+    if (!matchModifiers(elem.modifiers, rule.modifiers)) return false;
     if (exports.verbose) console.log("  -- Modifications match --");
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
     if (exports.verbose) console.log("  -- Qualifiers match --");
