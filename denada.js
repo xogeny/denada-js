@@ -38,17 +38,46 @@ exports.parseFile = function(s, callback) {
     });
 }
 
+function matchIdentifier(id, pattern) {
+    return id.match(pattern)!=null;
+}
+
+function matchValue(val, pattern) {
+    return true; // TODO
+}
+
+function matchModifiers(obj, patterns) {
+    return true; // TODO
+}
+
+function matchQualifiers(quals, patterns) {
+    for(var i=0;i<quals.length;i++) {
+    }
+    return true; // TODO
+}
+
+function matchDeclaration(elem, rule) {
+    if (!matchIdentifier(elem.typename, rule.typename)) return false;
+    if (!matchIdentifier(elem.varname, rule.varname)) return false;
+    if (!matchValue(elem.value, rule.value)) return false;
+    if (!matchModifiers(elem.mods, rule.mods)) return false;
+    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
+    return [];
+}
+
+function matchDefinition(elem, rule) {
+    if (!matchIdentifier(elem.name, rule.name)) return false;
+    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
+    // TODO: Contents
+    return [];
+}
+
 function matchElement(elem, rule) {
     // If these aren't even the same type of element, they don't match
     if (elem.element!==rule.element) return false;
-    if (elem.element=="declaration") {
-    } else if (elem.element=="definition") {
-    } else {
-	// If they are an unknown element type, they don't match
-	return false;
-    }
-    // If no other issue were found, assume they match
-    return true;
+    if (elem.element=="declaration") return matchDeclaration(elem, rule);
+    if (elem.element=="definition") return matchDefinition(elem, rule);
+    throw "Unexpected element type: "+elem.element;
 }
 
 /*
@@ -65,6 +94,7 @@ function checkContents(tree, rules) {
     var elem;
     var data;
     var matched;
+    var result;
 
     var issues = []; // List of issues found (initially empty)
     var ruledata = {}; // Collection of rules found in the rules ast
@@ -141,15 +171,25 @@ function checkContents(tree, rules) {
 	    data = ruledata[j];
 	    for(var k=0;k<data.matches.length;k++) {
 		rule = data.matches[k];
-		if (matchElement(elem, rule)) {
-		    // We found a match, so we are done searching the rules
-		    matched = true;
-		    // Annotate the tree with information about which rule it matched
-		    elem["match"] = {"rulename": data.rulename, "count": data.count};
-		    // Record the fact that we found another match for this rule
-		    data.count = data.count+1;
-		    break;
-		}
+		result = matchElement(elem, rule);
+		// No match found, continue searching
+		if (result==false) continue;
+
+		// If we get here, we have a match.  But, `result` is a list
+		// of any issues encountered deeper down in the hierarchy.  So
+		// we need to indicate we found a match and include any issues
+		// that were identified...
+
+		// Indicate we found a match
+		matched = true;
+		// Annotate the tree with information about which rule it matched
+		elem["match"] = {"rulename": data.rulename, "count": data.count};
+		// Record the fact that we found another match for this rule
+		data.count = data.count+1;
+		// Append any issues we found deeper in the tree hierarchy
+		issues = issues.concat(result);
+		// Indicate we're done searching
+		break;
 	    }
 	    // If we've found a match, we can stop searching for one
 	    if (matched) break;
