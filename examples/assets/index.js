@@ -6,7 +6,7 @@ var tree = denada.parseFileSync('assets.dnd');
 var issues = denada.process(tree, grammar);
 console.log(issues.join("\n"));
 
-function isComputer(d) { return d.hasOwnProperty("match") && d.match.rulename==="computer"; }
+function isComputer(d) { return d.rulename==="computer"; }
 function prettyPrint(d) { return d.name+": "+d.decl.model.value+" @ "+d.decl.location.value; }
 
 var computers = denada

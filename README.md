@@ -172,10 +172,8 @@ abstract syntax tree is just a JSON tree:
         "varname": "location",
         "value": "By my desk",
         "description": null,
-        "match": {
-          "rulename": "location",
-          "count": 0
-        }
+	"rulename": "location",
+        "count": 0
       },
       {
         "element": "declaration",
@@ -185,17 +183,13 @@ abstract syntax tree is just a JSON tree:
         "varname": "model",
         "value": "HP 8860",
         "description": null,
-        "match": {
-          "rulename": "model",
-          "count": 0
-        }
+        "rulename": "model",
+        "count": 0
       }
     ],
     "description": null,
-    "match": {
-      "rulename": "printer",
-      "count": 0
-    }
+    "rulename": "printer",
+    "count": 0
   },
   {
     "element": "definition",
@@ -212,10 +206,8 @@ abstract syntax tree is just a JSON tree:
         "varname": "location",
         "value": "By my desk",
         "description": null,
-        "match": {
-          "rulename": "location",
-          "count": 0
-        }
+        "rulename": "location",
+        "count": 0
       },
       {
         "element": "declaration",
@@ -225,10 +217,8 @@ abstract syntax tree is just a JSON tree:
         "varname": "model",
         "value": "HP 8860",
         "description": null,
-        "match": {
-          "rulename": "model",
-          "count": 0
-        }
+        "rulename": "model",
+        "count": 0
       },
       {
         "element": "declaration",
@@ -238,17 +228,13 @@ abstract syntax tree is just a JSON tree:
         "varname": "networkName",
         "value": "PrinterDEF",
         "description": null,
-        "match": {
-          "rulename": "name",
-          "count": 0
-        }
+        "rulename": "name",
+        "count": 0
       }
     ],
     "description": null,
-    "match": {
-      "rulename": "printer",
-      "count": 1
-    }
+    "rulename": "printer",
+    "count": 1
   },
   {
     "element": "definition",
@@ -265,10 +251,8 @@ abstract syntax tree is just a JSON tree:
         "varname": "location",
         "value": "On my desk",
         "description": null,
-        "match": {
-          "rulename": "location",
-          "count": 0
-        }
+        "rulename": "location",
+        "count": 0
       },
       {
         "element": "declaration",
@@ -278,17 +262,13 @@ abstract syntax tree is just a JSON tree:
         "varname": "model",
         "value": "Mac Book Air",
         "description": null,
-        "match": {
-          "rulename": "model",
-          "count": 0
-        }
+        "rulename": "model",
+        "count": 0
       }
     ],
     "description": null,
-    "match": {
-      "rulename": "computer",
-      "count": 0
-    }
+    "rulename": "computer",
+    "count": 0
   }
 ]
 ```
@@ -321,7 +301,7 @@ var tree = denada.parseFileSync('assets.dnd');
 
 denada.process(tree, grammar);
 
-function isComputer(d) { return d.match.rulename==="computer"; }
+function isComputer(d) { return d.rulename==="computer"; }
 function prettyPrint(d) { return d.name+": "+d.decl.model.value+" @ "+d.decl.location.value; }
 
 var computers = denada
@@ -347,7 +327,6 @@ var tree = denada.parseFileSync('assets.dnd');
 
 denada.process(tree, grammar);
 
-function isComputer(d) { return d.match.rulename==="computer"; }
 function prettyPrint(d) { return d.name+": "+d.decl.model.value+" @ "+d.decl.location.value; }
 
 var assets = denada

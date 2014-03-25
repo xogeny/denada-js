@@ -279,7 +279,8 @@ function checkContents(tree, rules) {
 		// Indicate we found a match
 		matched = true;
 		// Annotate the tree with information about which rule it matched
-		elem["match"] = {"rulename": data.rulename, "count": data.count};
+		elem["rulename"] = data.rulename
+		elem["count"] = data.count
 		// Record the fact that we found another match for this rule
 		data.count = data.count+1;
 		// Append any issues we found deeper in the tree hierarchy
@@ -348,7 +349,7 @@ exports.pred = {};
 exports.pred.isDefinition = function (d) { return d.element==="definition"; }
 exports.pred.matchesRule = function(pat) {
     return function(d) {
-	return d.match.rulename.match(pat)!=null;
+	return d.hasOwnProperty("rulename") && d.rulename.match(pat)!=null;
     }
 }
 exports.pred.hasQualifier = function(qual) {

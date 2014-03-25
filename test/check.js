@@ -15,9 +15,9 @@ function shouldFail(tree, rules) {
 }
 
 function ruleInfo(node, name, count) {
-    assert(node.hasOwnProperty("match"), "Node is missing match information");
-    assert.equal(node.match.rulename, name);
-    assert.equal(node.match.count, count);
+    assert(node.hasOwnProperty("rulename"), "Node is missing rule information");
+    assert.equal(node.rulename, name);
+    assert.equal(node.count, count);
 }
 
 describe("Declaration pattern handling", function() {
