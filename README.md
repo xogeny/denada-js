@@ -82,7 +82,7 @@ printer ABC {
 
 This doesn't really *mean* anything, but it conforms to the required
 syntax.  Although this might be useful as is, the real use case for
-Denada is defining a grammar the restricts what is permitted.  That's
+Denada is defining a grammar that restricts what is permitted.  That's
 because this is also completely legal:
 
 ```
