@@ -106,27 +106,59 @@ function matchQualifiers(quals, patterns) {
     return true;
 }
 
-function matchDeclaration(elem, rule) {
-    if (!matchIdentifier(elem.typename, rule.typename)) return false;
-    if (!matchIdentifier(elem.varname, rule.varname)) return false;
-    if (!matchValue(elem.value, rule.value)) return false;
-    if (!matchModifiers(elem.modifiers, rule.modifiers)) return false;
-    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
+function matchDeclaration(elem, rule, data, reasons) {
+    if (!matchIdentifier(elem.typename, rule.typename)) {
+	reasons.push("Type name "+elem.typename+" didn't match name pattern "+
+		     rule.typename+" for rule "+data.rulename);
+	return false;
+    }
+    if (!matchIdentifier(elem.varname, rule.varname)) {
+	reasons.push("Variable name "+elem.varname+" didn't match name pattern "+
+		     rule.varname+" for rule "+data.rulename);
+	return false;
+    }
+    if (!matchValue(elem.value, rule.value)) {
+	reasons.push("Assigned value "+elem.value+" didn't match name pattern "+
+		     rule.value+" for rule "+data.rulename);
+	return false;
+    }
+    if (!matchModifiers(elem.modifiers, rule.modifiers)) {
+	reasons.push("Modifications didn't match set of potential modifications "+
+		     " for rule "+data.rulename);
+	return false;
+    }
+    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) {
+	reasons.push(elem.qualifiers.toString()+" didn't match set of potential qualifiers "+
+		     rule.qualifiers.toString()+" for rule "+data.rulename);
+	return false;
+    }
     return [];
 }
 
-function matchDefinition(elem, rule, context) {
-    if (!matchIdentifier(elem.name, rule.name)) return false;
-    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
-    if (!matchModifiers(elem.modifiers, rule.modifiers)) return false;
+function matchDefinition(elem, rule, data, context, reasons) {
+    if (!matchIdentifier(elem.name, rule.name)) {
+	reasons.push("Name "+elem.name+" didn't match name pattern "+
+		     rule.name+" for rule "+data.rulename);
+	return false;
+    }
+    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) {
+	reasons.push(elem.qualifiers.toString()+" didn't match set of potential qualifiers "+
+		     rule.qualifiers.toString()+" for rule "+data.rulename);
+	return false;
+    }
+    if (!matchModifiers(elem.modifiers, rule.modifiers)) {
+	reasons.push("Modifications didn't match set of potential modifications "+
+		     " for rule "+data.rulename);
+	return false;
+    }
     return checkContents(elem.contents, context || rule.contents);
 }
 
-function matchElement(elem, rule, context) {
+function matchElement(elem, rule, data, context, reasons) {
     // If these aren't even the same type of element, they don't match
     if (elem.element!==rule.element) return false;
-    if (elem.element=="declaration") return matchDeclaration(elem, rule);
-    if (elem.element=="definition") return matchDefinition(elem, rule, context);
+    if (elem.element=="declaration") return matchDeclaration(elem, rule, data, reasons);
+    if (elem.element=="definition") return matchDefinition(elem, rule, data, context, reasons);
     throw "Unexpected element type: "+elem.element;
 }
 
@@ -147,6 +179,7 @@ function checkContents(tree, rules) {
     var data;
     var matched;
     var result;
+    var reasons;
 
     var issues = []; // List of issues found (initially empty)
     var ruledata = {}; // Collection of rules found in the rules ast
@@ -229,11 +262,12 @@ function checkContents(tree, rules) {
 	matched = false;
 	// ..and then we loop through the rules to see if this element
 	// matches any of the rules.
+	reasons = [];
 	for(var j in ruledata) {
 	    data = ruledata[j];
 	    for(var k=0;k<data.matches.length;k++) {
 		rule = data.matches[k];
-		result = matchElement(elem, rule, data.recursive ? rules : null);
+		result = matchElement(elem, rule, data, data.recursive ? rules : null, reasons);
 		// No match found, continue searching
 		if (result===false) continue;
 
@@ -258,7 +292,7 @@ function checkContents(tree, rules) {
 	}
 	// If we get here and no match was found, report it.
 	if (!matched) issues.push("Unable to find a matching rule for element: "+
-				  JSON.stringify(elem));
+				  JSON.stringify(elem)+" because\n  "+reasons.join("\n  "));
     }
 
     // Now that we've checked each element in `tree` to see if it has a match,

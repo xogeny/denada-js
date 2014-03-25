@@ -17,7 +17,7 @@ describe("Asset example", function() {
 	var rules = denada.parseFileSync("test/samples/assetGrammar.dnd");
 	var issues = denada.process(tree, rules);
 
-	console.log(JSON.stringify(tree, undefined, 2));
+	//console.log(JSON.stringify(tree, undefined, 2));
 	for(var i=0;i<issues.length;i++) console.log("Unexpected issue: "+issues[i]);
 	assert.equal(issues.length, 0);
 	done();
