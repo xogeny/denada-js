@@ -11,7 +11,7 @@ shortly).  Recently, I was faced with a situation where I needed to
 develop a DSL for a project and decided to follow the same approach.
 
 I can already imagine people rolling their eyes at the premise.  But
-give me give more minutes and I'll explain why I did it.
+give me five more minutes and I'll explain why I did it.
 
 There are lots of different ways to build DSLs.  Let's take a quick
 walk across the spectrum of possibilities.  One approach to DSL design
