@@ -25,7 +25,10 @@ describe("Grammar", function() {
 	    "modifiers": null,
 	    "varname": "x",
 	    "value": null,
-	    "description": null
+	    "description": null,
+	    "line": 1,
+	    "column": 26,
+	    "file": null
 	}]);
 	done();
     });

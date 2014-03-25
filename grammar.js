@@ -46,7 +46,10 @@ module.exports = (function() {
               "modifiers": mods,
               "varname": ids.slice(-1)[0],
               "value": val,
-              "description": dstr
+              "description": dstr,
+              "file": null,
+              "line": line(),
+              "column": column()
             };
           },
         peg$c7 = "=",
@@ -78,7 +81,10 @@ module.exports = (function() {
               "name": ids.slice(-1)[0],
               "modifiers": mods,
               "contents": contents,
-              "description": dstr
+              "description": dstr,
+              "file": null,
+              "line": line(),
+              "column": column()
             };
           },
         peg$c25 = function(s) { return s; },

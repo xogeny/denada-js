@@ -20,7 +20,10 @@ declaration
       "modifiers": mods,
       "varname": ids.slice(-1)[0],
       "value": val,
-      "description": dstr
+      "description": dstr,
+      "file": null,
+      "line": line(),
+      "column": column()
     };
   }
 
@@ -44,7 +47,10 @@ definition
       "name": ids.slice(-1)[0],
       "modifiers": mods,
       "contents": contents,
-      "description": dstr
+      "description": dstr,
+      "file": null,
+      "line": line(),
+      "column": column()
     };
   }
 

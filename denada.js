@@ -291,8 +291,11 @@ function checkContents(tree, rules) {
 	    if (matched) break;
 	}
 	// If we get here and no match was found, report it.
-	if (!matched) issues.push("Unable to find a matching rule for element: "+
-				  JSON.stringify(elem)+" because\n  "+reasons.join("\n  "));
+	if (!matched)
+	    issues.push("Line "+elem.line+", column "+elem.column+
+			(elem.file==null ? "" : "of "+elem.file)+
+			": Unable to find a matching rule for element: "+
+			JSON.stringify(elem)+" because\n  "+reasons.join("\n  "));
     }
 
     // Now that we've checked each element in `tree` to see if it has a match,
