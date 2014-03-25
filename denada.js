@@ -296,7 +296,7 @@ function checkContents(tree, rules) {
 	    issues.push("Line "+elem.line+", column "+elem.column+
 			(elem.file==null ? "" : "of "+elem.file)+
 			": Unable to find a matching rule for element: "+
-			JSON.stringify(elem)+" because\n  "+reasons.join("\n  "));
+			exports.unparse(elem, true)+" because\n  "+reasons.join("\n  "));
     }
 
     // Now that we've checked each element in `tree` to see if it has a match,
@@ -327,6 +327,93 @@ exports.process = function(tree, rules) {
     return issues;
 }
 
+function unparseIdentifier(id) {
+    if (id.match("[_a-zA-z]+")!=null) return id
+    else return "'"+id+"'";
+}
+
+function unparseQualifiers(quals) {
+    return quals.join(" ")+(quals.length>0 ? " " : "");
+}
+
+function unparseValue(val) {
+    if (typeof(val)=="string") { return '"'+val+'"'; }
+    return val.toString();
+}
+
+function unparseModifiers(mods) {
+    if (Object.keys(mods).length>0) {
+	mods = []
+	for(var k in mods) {
+	    mods.push(unparseIdentifier(k)+"="+unparseValue(mods[k]));
+	}
+	return "("+mods.join(",")+")";
+    }
+    return "";
+}
+
+function stringFill3(x, n) { 
+    var s = ''; 
+    for (;;) { 
+        if (n & 1) s += x; 
+        n >>= 1; 
+        if (n) x += x; 
+        else break; 
+    } 
+    return s; 
+}
+
+function unparse(elem, indent, recursive) {
+    var ret = "";
+    var mods = [];
+    ret = ret+stringFill3(" ", indent);
+    if (elem.element=="definition") {
+	ret = ret+unparseQualifiers(elem.qualifiers);
+	ret = ret+unparseIdentifier(elem.name);
+	if (elem.modifiers!=null) ret = ret+unparseModifiers(elem.modifiers);
+	if (elem.description!=null) {
+	    ret = ret + ' "'+elem.description+'"';
+	}
+	if (recursive) {
+	    ret = ret+" {\n";
+	    for(var i=0;i<elem.contents.length;i++) {
+		ret = ret+unparse(elem.contents[i], indent+2, recursive);
+	    }
+	    ret = ret+stringFill3(" ", indent)+"}\n";
+	} else {
+	    ret = ret + " { ... }";
+	}
+    } else if (elem.element=="declaration") {
+	// Qualifiers
+	ret = ret+unparseQualifiers(elem.qualifiers);
+	ret = ret+unparseIdentifier(elem.typename)+" "+unparseIdentifier(elem.varname);
+	if (elem.modifiers!=null) ret = ret+unparseModifiers(elem.modifiers);
+	if (elem.value!=null) {
+	    ret = ret+"="+unparseValue(elem.value);
+	}
+	if (elem.description!=null) {
+	    ret = ret + ' "'+elem.description+'"';
+	}
+	ret = ret+";\n";
+    } else {
+	throw "Invalid element: "+elem
+    }
+    return ret;
+}
+
+exports.unparse = function(tree, recursive) {
+    var ret = "";
+    var recurse = recursive || true;
+    if (tree instanceof Array) {
+	for(var i=0;i<tree.length;i++) {
+	    ret = ret + unparse(tree[i], 0, recursive);
+	}
+    } else {
+	ret = ret + unparse(tree, 0, recursive);
+    }
+    return ret;
+}
+
 exports.visit = function(tree, f) {
     for(var i=0;i<tree.length;i++) {
 	f(tree[i]);
@@ -345,6 +432,7 @@ exports.flatten = function(tree, filter) {
     return elems;
 }
 
+/* Some useful predicates that can be used for filtering */
 exports.pred = {};
 exports.pred.isDefinition = function (d) { return d.element==="definition"; }
 exports.pred.matchesRule = function(pat) {
