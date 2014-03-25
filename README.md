@@ -124,7 +124,7 @@ optional because the rule name `"name?"` ends with a `?`.
 By defining the grammar in this way, we specify precisely what can be
 included in the Denada file.  But let's not limit ourselves to
 printers.  Assume we want to list the computers in the company too.
-We would could simply create a new rule for computers, *e.g.,*
+We could simply create a new rule for computers, *e.g.,*
 
 ```
 printer _ "printer*" {
