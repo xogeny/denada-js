@@ -1,9 +1,22 @@
 var grammar = require('./grammar');
 var fs = require('fs');
 
-exports.parse = function(s) {
+function addNamed(d) {
+    if (d.element=="declaration") return;
+    if (!d.hasOwnProperty("decl")) d["decl"] = {}
+    if (!d.hasOwnProperty("def")) d["def"] = {}
+    for(var i=0;i<d.contents.length;i++) {
+	var elem = d.contents[i];
+	if (elem.element==="definition") d["def"][elem.name] = elem;
+	if (elem.element==="declaration") d["decl"][elem.varname] = elem;
+    }
+}
+
+exports.parse = function(s, options) {
     try {
-	return grammar.parse(s);
+	var ast = grammar.parse(s);
+	exports.visit(ast, addNamed);
+	return ast;
     } catch(e) {
 	throw {
 	    message: "Syntax error on line "+e.line+" (column "+e.column+"): "+e.message
@@ -11,16 +24,10 @@ exports.parse = function(s) {
     }
 }
 
-exports.parseFileSync = function(s) {
+exports.parseFileSync = function(s, options) {
     var contents;
     contents = fs.readFileSync(s, 'utf8');
-    try {
-	return grammar.parse(contents);
-    } catch(e) {
-	throw {
-	    message: "Syntax error on line "+e.line+" (column "+e.column+") of "+s+": "+e.message
-	};
-    }
+    return exports.parse(contents, options);
 }
 
 exports.parseFile = function(s, callback) {
@@ -28,12 +35,10 @@ exports.parseFile = function(s, callback) {
 	var ast;
 	if (err) callback(err);
 	try {
-	    ast = grammar.parse(res);
+	    ast = exports.parse(res);
 	    callback(undefined, ast);
 	} catch(e) {
-	    callback({
-		message: "Syntax error on line "+e.line+" (column "+e.column+") of "+s+": "+e.message
-	    });
+	    callback(e);
 	}
     });
 }
@@ -281,4 +286,38 @@ exports.process = function(tree, rules) {
     var issues = checkContents(tree, rules);
     /* Return the tree and the issues */
     return issues;
+}
+
+exports.visit = function(tree, f) {
+    for(var i=0;i<tree.length;i++) {
+	f(tree[i]);
+	if (tree[i].element=="definition") {
+	    exports.visit(tree[i].contents, f);
+	}
+    }
+}
+
+exports.flatten = function(tree, filter) {
+    var elems = [];
+    exports.visit(tree, function(e) {
+	if (filter) { if (filter(e)) elems.push(e); }
+	else elems.push(e);
+    });
+    return elems;
+}
+
+exports.pred = {};
+exports.pred.isDefinition = function (d) { return d.element==="definition"; }
+exports.pred.matchesRule = function(pat) {
+    return function(d) {
+	return d.match.rulename.match(pat)!=null;
+    }
+}
+exports.pred.hasQualifier = function(qual) {
+    return function(d) {
+	for(var i=0;i<d.qualifiers.length;i++) {
+	    if (d.qualifiers[i].match(qual)!=null) return true;
+	}
+	return false;
+    }
 }

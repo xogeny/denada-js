@@ -302,10 +302,72 @@ Note how the tree has been marked up with information about the rule
 that each node matched?  As we'll see in a minute, this will allow us
 to quickly query for matches.
 
-## Pattern Matching
+## AST Processing
 
-...
+In our asset tracking example, the AST is pretty large and includes a
+lot of information.  If we need that information, then this is really
+useful.  But there are many cases where we may not.
 
-## Querying
+Let's imagine, for the sake of our example, that we simply wanted to
+generate a decently formatted list of computers.  The following
+example code shows a script that would read in our asset list from a
+file named `assets.dnd`, check it against a grammar for that file (to
+make sure the format conforms precisely to what we expect) and then
+process the AST into a nice list:
 
-...
+```
+var grammar = denada.parseFileSync('assetGrammar.dnd');
+var tree = denada.parseFileSync('assets.dnd');
+
+denada.process(tree, grammar);
+
+function isComputer(d) { return d.match.rulename==="computer"; }
+function prettyPrint(d) { return d.name+": "+d.decl.model.value+" @ "+d.decl.location.value; }
+
+var computers = denada
+    .flatten(tree, isComputer)
+    .map(prettyPrint);
+
+console.log("Computers:\n"+computers.join(", "));
+```
+
+The resulting output from this script would be:
+
+```
+Computers:
+XYZ: Mac Book Air @ Coffee machine
+```
+
+If we wanted to output all the assets according to this format, we
+might change the script to be:
+
+```
+var grammar = denada.parseFileSync('assetGrammar.dnd');
+var tree = denada.parseFileSync('assets.dnd');
+
+denada.process(tree, grammar);
+
+function isComputer(d) { return d.match.rulename==="computer"; }
+function prettyPrint(d) { return d.name+": "+d.decl.model.value+" @ "+d.decl.location.value; }
+
+var assets = denada
+    .flatten(tree, denada.pred.isDefinition)
+    .map(prettyPrint);
+
+console.log("Assets:\n"+assets.join("\n"));
+```
+
+In this case, the output from the script would be:
+
+```
+Assets:
+ABC: HP 8860 @ Mike's desk
+XYZ: Mac Book Air @ Coffee machine
+DEF: HP 8860 @ Mike's desk
+```
+
+The Denada library includes basic functions to `visit` nodes in the
+AST of the simply `flatten` it (with optional filtering).  Once the
+tree has been flattened, the normal `Array` related functions from
+Javascript (*e.g.,* `map`) can be applied to the resulting collection
+of nodes.

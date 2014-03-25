@@ -3,13 +3,13 @@ printer ABC {
    set model = "HP 8860";
 }
 
-printer DEF {
+computer XYZ {
    set location = "Coffee machine";
-   set model = "HP 8860";
-   set networkName = "PrinterDEF";
+   set model = "Mac Book Air";
 }
 
-computer XYZ {
+printer DEF {
    set location = "Mike's desk";
-   set model = "Mac Book Air";
+   set model = "HP 8860";
+   set networkName = "PrinterDEF";
 }
