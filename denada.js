@@ -118,6 +118,7 @@ function matchDeclaration(elem, rule) {
 function matchDefinition(elem, rule, context) {
     if (!matchIdentifier(elem.name, rule.name)) return false;
     if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) return false;
+    if (!matchModifiers(elem.modifiers, rule.modifiers)) return false;
     return checkContents(elem.contents, context || rule.contents);
 }
 

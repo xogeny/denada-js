@@ -24,20 +24,6 @@ declaration
     };
   }
 
-declarationq
-  = quals:qualifier* typename:identifier _ varname:identifier mods:modifiers?
-    val:assignment dstr:dstring ";" _ {
-    return {
-      "element": "declaration",
-      "qualifiers": quals,
-      "typename": typename,
-      "modifiers": mods,
-      "varname": varname,
-      "value": val,
-      "description": dstr
-    };
-  }
-
 modification
   = _ id:identifier _ "=" _ e:expr _ { return [id, e]; }
 
@@ -50,24 +36,13 @@ modifiers
   })? ")" { return con ? con : {}; }
 
 definition
-  = ids:(id:identifier _ { return id; })+ dstr:dstring _ "{"
+  = ids:(id:identifier _ { return id; })+ mods:modifiers? dstr:dstring _ "{"
     _ contents: (elem:element _ { return elem; })* "}" _ {
     return {
       "element": "definition",
       "qualifiers": ids.slice(0, ids.length-1),
       "name": ids.slice(-1)[0],
-      "contents": contents,
-      "description": dstr
-    };
-  }
-
-definitionq
-  = quals:qualifier* name:identifier dstr:dstring _ "{"
-    _ contents: (elem:element _ { return elem; })* "}" _ {
-    return {
-      "element": "definition",
-      "qualifiers": quals,
-      "name": name,
+      "modifiers": mods,
       "contents": contents,
       "description": dstr
     };
@@ -78,9 +53,6 @@ dstring
 
 assignment
   = (_ "=" _ e:expr { return e; })?
-
-qualifier
-  = "@" qual:identifier _ { return qual; }
 
 identifier
   = chars:[a-zA-Z_]+ { return chars.join(""); }
