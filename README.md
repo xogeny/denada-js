@@ -29,7 +29,7 @@ semantics could be a win (you need to implement similar semantics in
 your language) or a loss (you add a bunch of complexity and sharp
 edges to a language for non-experts).
 
-Another approach is to create a so-called "extenral DSL".  For this,
+Another approach is to create a so-called "external DSL".  For this,
 you might using a parser generator (e.g. ANTLR) to create a parser for
 your language.  This allows you to completely define your semantics
 (without exposing people to the host language semantics).  This allows
