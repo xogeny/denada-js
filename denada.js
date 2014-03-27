@@ -13,14 +13,15 @@ function addNamed(d) {
 }
 
 exports.parse = function(s, options) {
+    var ast;
+    var msg;
     try {
-	var ast = grammar.parse(s);
+	ast = grammar.parse(s);
 	exports.visit(ast, addNamed);
 	return ast;
     } catch(e) {
-	throw {
-	    message: "Syntax error on line "+e.line+" (column "+e.column+"): "+e.message
-	};
+	msg = e.name+" on line "+e.line+" (column "+e.column+"): "+e.message;
+	throw new Error(msg);
     }
 }
 
@@ -159,7 +160,7 @@ function matchElement(elem, rule, data, context, reasons) {
     if (elem.element!==rule.element) return false;
     if (elem.element=="declaration") return matchDeclaration(elem, rule, data, reasons);
     if (elem.element=="definition") return matchDefinition(elem, rule, data, context, reasons);
-    throw "Unexpected element type: "+elem.element;
+    throw new Error("Unexpected element type: "+elem.element);
 }
 
 /*
@@ -232,8 +233,8 @@ function checkContents(tree, rules) {
 	    if (ruledata.hasOwnProperty(rulename)) {
 		// ...if so, make sure cardinality matches...
 		if (ruledata[rulename].desc!==desc) {
-		    throw "Rule "+rulename+" has mismatched cardinality: "+
-			ruledata[rulename].desc+" vs. "+desc;
+		    throw new Error("Rule "+rulename+" has mismatched cardinality: "+
+				    ruledata[rulename].desc+" vs. "+desc);
 		}
 		// ...and then add the current rule as a potential match
 		ruledata[rulename].matches.push(rule);
@@ -396,7 +397,7 @@ function unparse(elem, indent, recursive) {
 	}
 	ret = ret+";\n";
     } else {
-	throw "Invalid element: "+elem
+	throw new Error("Invalid element: "+elem);
     }
     return ret;
 }
