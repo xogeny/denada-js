@@ -249,6 +249,8 @@ function checkContents(tree, rules) {
 		    "min": min,
 		    "max": max};
 	    }
+	    // Add the rule data to the rule
+	    rule["ruledata"] = rule
 	} else {
 	    // Found an element in the rule tree with no rule name or cardinality information
 	    issues.push("Rule without rulename: "+rule);
