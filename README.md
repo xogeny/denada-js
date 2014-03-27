@@ -11,7 +11,7 @@ shortly).  Recently, I was faced with a situation where I needed to
 develop a DSL for a project and decided to follow the same approach.
 
 I can already imagine people rolling their eyes at the premise.  But
-give me give more minutes and I'll explain why I did it.
+give me five more minutes and I'll explain why I did it.
 
 There are lots of different ways to build DSLs.  Let's take a quick
 walk across the spectrum of possibilities.  One approach to DSL design
@@ -29,7 +29,7 @@ semantics could be a win (you need to implement similar semantics in
 your language) or a loss (you add a bunch of complexity and sharp
 edges to a language for non-experts).
 
-Another approach is to create a so-called "extenral DSL".  For this,
+Another approach is to create a so-called "external DSL".  For this,
 you might using a parser generator (e.g. ANTLR) to create a parser for
 your language.  This allows you to completely define your semantics
 (without exposing people to the host language semantics).  This allows
@@ -82,7 +82,7 @@ printer ABC {
 
 This doesn't really *mean* anything, but it conforms to the required
 syntax.  Although this might be useful as is, the real use case for
-Denada is defining a grammar the restricts what is permitted.  That's
+Denada is defining a grammar that restricts what is permitted.  That's
 because this is also completely legal:
 
 ```
@@ -124,7 +124,7 @@ optional because the rule name `"name?"` ends with a `?`.
 By defining the grammar in this way, we specify precisely what can be
 included in the Denada file.  But let's not limit ourselves to
 printers.  Assume we want to list the computers in the company too.
-We would could simply create a new rule for computers, *e.g.,*
+We could simply create a new rule for computers, *e.g.,*
 
 ```
 printer _ "printer*" {
