@@ -18,10 +18,22 @@ parser.addArgument(
   [ '-g', '--grammar' ],
   { help: 'Grammar to apply to parsed file' });
 
+parser.addArgument(
+  [ '-a', '--ast' ],
+  {
+      defaultValue: false,
+      action: 'storeTrue',
+      help: "Include abstract syntax trees in output"
+  });
+
 var args = parser.parseArgs();
 
 var tree = denada.parseFileSync(args.tree);
 console.log("Parsing of "+args.tree+" was successful");
+if (args.ast) {
+  console.log("Parse tree AST:");
+  console.log(JSON.stringify(grammar, undefined, 2));
+}
 var grammar = null;
 var issues = null;
 
@@ -35,6 +47,10 @@ if (args.grammar) {
       console.log(issues[i]);
     } 
   } else {
+    if (args.ast) {
+      console.log("Parse grammar AST:");
+      console.log(JSON.stringify(grammar, undefined, 2));
+    }
     console.log("No grammatic issues found");
   }   
 }

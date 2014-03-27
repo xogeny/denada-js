@@ -20,7 +20,11 @@ exports.parse = function(s, options) {
 	exports.visit(ast, addNamed);
 	return ast;
     } catch(e) {
-	msg = e.name+" on line "+e.line+" (column "+e.column+"): "+e.message;
+	if (e.file==null) {
+	    msg = e.name+" on line "+e.line+" (column "+e.column+"): "+e.message;
+	} else {
+	    msg = e.name+" on line "+e.line+" (column "+e.column+") of "+e.file+": "+e.message;
+	}
 	throw new Error(msg);
     }
 }
@@ -250,7 +254,13 @@ function checkContents(tree, rules) {
 		    "max": max};
 	    }
 	    // Add the rule data to the rule
-	    rule["ruledata"] = rule
+	    rule["ruledata"] = {
+		"recursive": recursive,
+		"rulename": rulename,
+		"desc": desc,
+		"min": min,
+		"max": max
+	    };
 	} else {
 	    // Found an element in the rule tree with no rule name or cardinality information
 	    issues.push("Rule without rulename: "+rule);
