@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+// -*- mode: javascript -*-
+
+var denada = require('..');
+var denjson = require('../package.json');
+
+var ArgumentParser = require('argparse').ArgumentParser;
+
+var parser = new ArgumentParser({
+    version: denjson.version,
+    addHelp: true,
+    description: 'Denada parser and grammar checker'
+});
+
+parser.addArgument(['tree'], { help: 'File to parse' });
+
+parser.addArgument(
+  [ '-g', '--grammar' ],
+  { help: 'Grammar to apply to parsed file' });
+
+var args = parser.parseArgs();
+
+var tree = denada.parseFileSync(args.tree);
+console.log("Parsing of "+args.tree+" was successful");
+var grammar = null;
+var issues = null;
+
+if (args.grammar) {
+  grammar = denada.parseFileSync(args.grammar);
+  console.log("Parsing of "+args.grammar+" was successful");
+  issues = denada.process(tree, grammar);
+  if (issues.length>0) {
+    console.log("Grammar checking found the following issues:");
+    for(var i=0;i<issues.length;i++) {
+      console.log(issues[i]);
+    } 
+  } else {
+    console.log("No grammatic issues found");
+  }   
+}
