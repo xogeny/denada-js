@@ -29,17 +29,20 @@ parser.addArgument(
 var args = parser.parseArgs();
 
 var tree = denada.parseFileSync(args.tree);
-console.log("Parsing of "+args.tree+" was successful");
-if (args.ast) {
-  console.log("Parse tree AST:");
-  console.log(JSON.stringify(grammar, undefined, 2));
+console.log("Parsing of "+args.tree+" was successful, "+tree.length+" elements found");
+if (args.ast && !args.grammar) {
+  console.log(JSON.stringify(tree, undefined, 2));
 }
 var grammar = null;
 var issues = null;
 
 if (args.grammar) {
+  if (args.ast) {
+    console.log(JSON.stringify(tree, undefined, 2));
+  }
   grammar = denada.parseFileSync(args.grammar);
-  console.log("Parsing of "+args.grammar+" was successful");
+  console.log("Parsing of "+args.grammar+" was successful, "+
+	      grammar.length+" elements found");
   issues = denada.process(tree, grammar);
   if (issues.length>0) {
     console.log("Grammar checking found the following issues:");
