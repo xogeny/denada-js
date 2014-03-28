@@ -11,9 +11,9 @@ module.exports = function(grunt) {
 	      src: "grammar.pegjs",
 	      dest: "grammar.js"
 	  },
-	  rules: {
-	      src: "rules.pegjs",
-	      dest: "rules.js"
+	  ruleGrammar: {
+	      src: "ruleGrammar.pegjs",
+	      dest: "ruleGrammar.js"
 	  }
       },
       // Configure a mochaTest task

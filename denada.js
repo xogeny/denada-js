@@ -1,4 +1,5 @@
 var grammar = require('./grammar');
+var ruleGrammar = require('./ruleGrammar');
 var fs = require('fs');
 
 function addNamed(d) {
@@ -226,6 +227,7 @@ function checkContents(tree, rules) {
     var matched;
     var result;
     var reasons;
+    var pdata;
 
     var issues = []; // List of issues found (initially empty)
     var subissues; // Used to record nested issues
@@ -243,37 +245,11 @@ function checkContents(tree, rules) {
 	   the name of the rule and indicates its cardinality. */
 	desc = rule.description;
 	if (desc) {
-	    // Extract the last character in the description
-	    endswith = desc.slice(-1);
-	    startswith = desc[0];
-
-	    // Determine if this is a recursive rule
-	    if (startswith=="^") {
-		recursive = true;
-		rulename = desc.slice(1,desc.length);
-	    } else {
-		recursive = false;
-		rulename = desc;
-	    }
-
-	    if (endswith=="*") {
-		// Cardinality - Zero or more
-		min = 0;
-		rulename = rulename.slice(0,rulename.length-1);;
-	    } else if (endswith=="+") {
-		// Cardinality - One or more
-		min = 1;
-		rulename = rulename.slice(0,rulename.length-1);;
-	    } else if (endswith=="?") {
-		// Cardinality - Optional
-		min = 0;
-		max = 1;
-		rulename = rulename.slice(0,rulename.length-1);;
-	    } else {
-		// If none of the above, assume exactly one is required
-		min = 1;
-		max = 1;
-	    }
+	    pdata = ruleGrammar.parse(desc);
+	    recursive = pdata.recursive;
+	    rulename = pdata.name;
+	    min = pdata.min;
+	    max = pdata.max;
 
 	    // Check to see if we already have a rule with this name...
 	    if (ruledata.hasOwnProperty(rulename)) {
