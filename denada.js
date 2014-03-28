@@ -17,6 +17,9 @@ exports.parse = function(s, options) {
     var msg;
     try {
 	ast = grammar.parse(s);
+	if (ast==null || ast==undefined) {
+	    throw new Error("Parse failed to return a valid tree: "+args.tree);
+	}
 	exports.visit(ast, addNamed);
 	return ast;
     } catch(e) {
@@ -49,7 +52,18 @@ exports.parseFile = function(s, callback) {
 }
 
 function matchIdentifier(id, pattern) {
-    return pattern==="_" || id.match(pattern)!=null;
+    // If the pattern is just the wildcard character, it is
+    // always a match
+    if (pattern==="_") return true;
+
+    // If the pattern is (or could be) an unquoted identifier,
+    // assume that it must be an exact match...
+    if (pattern.match("^[a-zA-Z_]+$")) {
+	return id===pattern;
+    }
+
+    // Otherwise, assume the pattern is a regexp
+    return id.match(pattern)!=null;
 }
 
 function matchValue(val, pattern) {
@@ -61,13 +75,13 @@ function matchValue(val, pattern) {
 	    var vtype = typeof(val);
 	    var pat = pattern.slice(1);
 	    if (pat==="_") return true;
-	    if (vtype.match(pat)) return true;
+	    if (vtype.match(pat)!=null) return true;
 	    return false;
 	} else if (typeof(val)=="string") {
 	    // If the value is a string, then we treat the pattern
 	    // as a regexp or wildcard
 	    if (pattern==="_") return true;
-	    if (val.match(pattern)) return true;
+	    if (val.match(pattern)!=null) return true;
 	    return false;
 	} else {
 	    // We get here if the pattern is a string but the value
@@ -96,17 +110,39 @@ function matchModifiers(obj, patterns) {
     return true;
 }
 
-function matchQualifiers(quals, patterns) {
+function matchQualifiers(quals, patterns, reasons) {
+    var required = [];
+    var count = [];
+    var pats = [];
     var matched;
+    var pat;
+    for(var j=0;j<patterns.length;j++) {
+	if (patterns[j].slice(-1)=="?") {
+	    pat = patterns[j].substr(0,patterns[j].length-1)
+	    required.push(false);
+	} else {
+	    pat = patterns[j]
+	    required.push(true);
+	}
+	pats.push(pat);
+	count.push(0);
+    }
     for(var i=0;i<quals.length;i++) {
 	matched = false;
 	for(var j=0;j<patterns.length;j++) {
-	    if (matchIdentifier(quals[i], patterns[j])) {
+	    if (matchIdentifier(quals[i], pats[j])) {
 		matched = true;
+		count[j]++;
 		break;
 	    }
 	}
 	if (!matched) return false;
+    }
+    for(var j=0;j<patterns.length;j++) {
+	if (required[j] && count[j]==0) {
+	    reasons.push("missing required qualifier "+pats[j]);
+	    return false;
+	}
     }
     return true;
 }
@@ -123,7 +159,7 @@ function matchDeclaration(elem, rule, data, reasons) {
 	return false;
     }
     if (!matchValue(elem.value, rule.value)) {
-	reasons.push("Assigned value "+elem.value+" didn't match name pattern "+
+	reasons.push("Assigned value "+elem.value+" didn't match value pattern "+
 		     rule.value+" for rule "+data.rulename);
 	return false;
     }
@@ -132,15 +168,16 @@ function matchDeclaration(elem, rule, data, reasons) {
 		     " for rule "+data.rulename);
 	return false;
     }
-    if (!matchQualifiers(elem.qualifiers, rule.qualifiers)) {
+    if (!matchQualifiers(elem.qualifiers, rule.qualifiers, reasons)) {
 	reasons.push(elem.qualifiers.toString()+" didn't match set of potential qualifiers "+
 		     rule.qualifiers.toString()+" for rule "+data.rulename);
 	return false;
     }
-    return [];
+    return true;
 }
 
-function matchDefinition(elem, rule, data, context, reasons) {
+function matchDefinition(elem, rule, data, context, issues, reasons) {
+    var subissues;
     if (!matchIdentifier(elem.name, rule.name)) {
 	reasons.push("Name "+elem.name+" didn't match name pattern "+
 		     rule.name+" for rule "+data.rulename);
@@ -156,14 +193,18 @@ function matchDefinition(elem, rule, data, context, reasons) {
 		     " for rule "+data.rulename);
 	return false;
     }
-    return checkContents(elem.contents, context || rule.contents);
+    subissues = checkContents(elem.contents, context || rule.contents)
+    for(var i=0;i<subissues.length;i++) issues.push(subissues[i]);
+    return true;
 }
 
-function matchElement(elem, rule, data, context, reasons) {
+function matchElement(elem, rule, data, context, issues, reasons) {
     // If these aren't even the same type of element, they don't match
     if (elem.element!==rule.element) return false;
-    if (elem.element=="declaration") return matchDeclaration(elem, rule, data, reasons);
-    if (elem.element=="definition") return matchDefinition(elem, rule, data, context, reasons);
+    if (elem.element=="declaration")
+	return matchDeclaration(elem, rule, data, reasons);
+    if (elem.element=="definition")
+	return matchDefinition(elem, rule, data, context, issues, reasons);
     throw new Error("Unexpected element type: "+elem.element);
 }
 
@@ -187,6 +228,7 @@ function checkContents(tree, rules) {
     var reasons;
 
     var issues = []; // List of issues found (initially empty)
+    var subissues; // Used to record nested issues
     var ruledata = {}; // Collection of rules found in the rules ast
 
     /* We start by looping over the rules and processing each rule we
@@ -280,7 +322,10 @@ function checkContents(tree, rules) {
 	    data = ruledata[j];
 	    for(var k=0;k<data.matches.length;k++) {
 		rule = data.matches[k];
-		result = matchElement(elem, rule, data, data.recursive ? rules : null, reasons);
+		subissues = [];
+		result = matchElement(elem, rule, data, data.recursive ? rules : null,
+				      subissues, reasons);
+
 		// No match found, continue searching
 		if (result===false) continue;
 
@@ -297,7 +342,7 @@ function checkContents(tree, rules) {
 		// Record the fact that we found another match for this rule
 		data.count = data.count+1;
 		// Append any issues we found deeper in the tree hierarchy
-		issues = issues.concat(result);
+		issues = issues.concat(subissues);
 		// Indicate we're done searching
 		break;
 	    }
@@ -305,11 +350,12 @@ function checkContents(tree, rules) {
 	    if (matched) break;
 	}
 	// If we get here and no match was found, report it.
-	if (!matched)
+	if (!matched) {
 	    issues.push("Line "+elem.line+", column "+elem.column+
 			(elem.file==null ? "" : "of "+elem.file)+
 			": Unable to find a matching rule for element: "+
 			exports.unparse(elem, true)+" because\n  "+reasons.join("\n  "));
+	}
     }
 
     // Now that we've checked each element in `tree` to see if it has a match,
@@ -334,6 +380,9 @@ function checkContents(tree, rules) {
 }
 
 exports.process = function(tree, rules) {
+    if (tree==null || tree==undefined) {
+	return ["Invalid input tree: "+tree];
+    }
     /* Compare tree to rules and collect any issues found */
     var issues = checkContents(tree, rules);
     /* Return the tree and the issues */
@@ -341,7 +390,7 @@ exports.process = function(tree, rules) {
 }
 
 function unparseIdentifier(id) {
-    if (id.match("[_a-zA-z]+")!=null) return id
+    if (id.match("^[_a-zA-z]+$")!=null) return id
     else return "'"+id+"'";
 }
 
