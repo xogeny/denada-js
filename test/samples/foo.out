@@ -1,0 +1,517 @@
+[
+  {
+    "element": "definition",
+    "qualifiers": [
+      "network"
+    ],
+    "name": "intranet",
+    "modifiers": null,
+    "description": null,
+    "contents": [
+      {
+        "element": "definition",
+        "qualifiers": [
+          "zdialog"
+        ],
+        "name": "Adjustments",
+        "modifiers": {
+          "title": "Parameters of press adjustable parameters"
+        },
+        "description": null,
+        "contents": [
+          {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[1]",
+            "modifiers": {
+              "title": "Crank X position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 3,
+            "column": 5
+          },
+          {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[2]",
+            "modifiers": {
+              "title": "Crank Y position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 4,
+            "column": 5
+          }
+        ],
+        "file": null,
+        "line": 2,
+        "column": 3,
+        "decl": {
+          "crank1.ground[1]": {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[1]",
+            "modifiers": {
+              "title": "Crank X position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 3,
+            "column": 5
+          },
+          "crank1.ground[2]": {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[2]",
+            "modifiers": {
+              "title": "Crank Y position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 4,
+            "column": 5
+          }
+        },
+        "def": {}
+      }
+    ],
+    "file": null,
+    "line": 1,
+    "column": 1,
+    "decl": {},
+    "def": {
+      "Adjustments": {
+        "element": "definition",
+        "qualifiers": [
+          "zdialog"
+        ],
+        "name": "Adjustments",
+        "modifiers": {
+          "title": "Parameters of press adjustable parameters"
+        },
+        "description": null,
+        "contents": [
+          {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[1]",
+            "modifiers": {
+              "title": "Crank X position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 3,
+            "column": 5
+          },
+          {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[2]",
+            "modifiers": {
+              "title": "Crank Y position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 4,
+            "column": 5
+          }
+        ],
+        "file": null,
+        "line": 2,
+        "column": 3,
+        "decl": {
+          "crank1.ground[1]": {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[1]",
+            "modifiers": {
+              "title": "Crank X position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 3,
+            "column": 5
+          },
+          "crank1.ground[2]": {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "crank1.ground[2]",
+            "modifiers": {
+              "title": "Crank Y position [mm]"
+            },
+            "value": null,
+            "description": null,
+            "file": null,
+            "line": 4,
+            "column": 5
+          }
+        },
+        "def": {}
+      }
+    }
+  }
+]
+Parsing of assetGrammar.dnd was successful
+Parse grammar AST:
+[
+  {
+    "element": "definition",
+    "qualifiers": [
+      "printer"
+    ],
+    "name": "_",
+    "modifiers": null,
+    "description": "printer*",
+    "contents": [
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "location",
+        "modifiers": null,
+        "value": "$string",
+        "description": "location",
+        "file": null,
+        "line": 2,
+        "column": 3
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "model",
+        "modifiers": null,
+        "value": "$string",
+        "description": "model",
+        "file": null,
+        "line": 3,
+        "column": 3
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "networkName",
+        "modifiers": null,
+        "value": "$string",
+        "description": "name?",
+        "file": null,
+        "line": 4,
+        "column": 3
+      }
+    ],
+    "file": null,
+    "line": 1,
+    "column": 1,
+    "decl": {
+      "location": {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "location",
+        "modifiers": null,
+        "value": "$string",
+        "description": "location",
+        "file": null,
+        "line": 2,
+        "column": 3
+      },
+      "model": {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "model",
+        "modifiers": null,
+        "value": "$string",
+        "description": "model",
+        "file": null,
+        "line": 3,
+        "column": 3
+      },
+      "networkName": {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "networkName",
+        "modifiers": null,
+        "value": "$string",
+        "description": "name?",
+        "file": null,
+        "line": 4,
+        "column": 3
+      }
+    },
+    "def": {},
+    "ruledata": {
+      "recursive": false,
+      "rulename": "printer",
+      "desc": "printer*",
+      "min": 0
+    }
+  },
+  {
+    "element": "definition",
+    "qualifiers": [
+      "computer"
+    ],
+    "name": "_",
+    "modifiers": null,
+    "description": "computer*",
+    "contents": [
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "location",
+        "modifiers": null,
+        "value": "$string",
+        "description": "location",
+        "file": null,
+        "line": 8,
+        "column": 3
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "model",
+        "modifiers": null,
+        "value": "$string",
+        "description": "model",
+        "file": null,
+        "line": 9,
+        "column": 3
+      },
+      {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "networkName",
+        "modifiers": null,
+        "value": "$string",
+        "description": "name?",
+        "file": null,
+        "line": 10,
+        "column": 3
+      }
+    ],
+    "file": null,
+    "line": 7,
+    "column": 1,
+    "decl": {
+      "location": {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "location",
+        "modifiers": null,
+        "value": "$string",
+        "description": "location",
+        "file": null,
+        "line": 8,
+        "column": 3
+      },
+      "model": {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "model",
+        "modifiers": null,
+        "value": "$string",
+        "description": "model",
+        "file": null,
+        "line": 9,
+        "column": 3
+      },
+      "networkName": {
+        "element": "declaration",
+        "qualifiers": [],
+        "typename": "set",
+        "varname": "networkName",
+        "modifiers": null,
+        "value": "$string",
+        "description": "name?",
+        "file": null,
+        "line": 10,
+        "column": 3
+      }
+    },
+    "def": {},
+    "ruledata": {
+      "recursive": false,
+      "rulename": "computer",
+      "desc": "computer*",
+      "min": 0
+    }
+  },
+  {
+    "element": "definition",
+    "qualifiers": [
+      "network"
+    ],
+    "name": "_",
+    "modifiers": null,
+    "description": "network*",
+    "contents": [
+      {
+        "element": "definition",
+        "qualifiers": [
+          "dialog"
+        ],
+        "name": "_",
+        "modifiers": {
+          "title": "$string"
+        },
+        "description": "dialog*",
+        "contents": [
+          {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "_",
+            "modifiers": {
+              "title": "$string"
+            },
+            "value": null,
+            "description": "parameter*",
+            "file": null,
+            "line": 15,
+            "column": 5,
+            "ruledata": {
+              "recursive": false,
+              "rulename": "parameter",
+              "desc": "parameter*",
+              "min": 0
+            }
+          }
+        ],
+        "file": null,
+        "line": 14,
+        "column": 3,
+        "decl": {
+          "_": {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "_",
+            "modifiers": {
+              "title": "$string"
+            },
+            "value": null,
+            "description": "parameter*",
+            "file": null,
+            "line": 15,
+            "column": 5,
+            "ruledata": {
+              "recursive": false,
+              "rulename": "parameter",
+              "desc": "parameter*",
+              "min": 0
+            }
+          }
+        },
+        "def": {},
+        "ruledata": {
+          "recursive": false,
+          "rulename": "dialog",
+          "desc": "dialog*",
+          "min": 0
+        }
+      }
+    ],
+    "file": null,
+    "line": 13,
+    "column": 1,
+    "decl": {},
+    "def": {
+      "_": {
+        "element": "definition",
+        "qualifiers": [
+          "dialog"
+        ],
+        "name": "_",
+        "modifiers": {
+          "title": "$string"
+        },
+        "description": "dialog*",
+        "contents": [
+          {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "_",
+            "modifiers": {
+              "title": "$string"
+            },
+            "value": null,
+            "description": "parameter*",
+            "file": null,
+            "line": 15,
+            "column": 5,
+            "ruledata": {
+              "recursive": false,
+              "rulename": "parameter",
+              "desc": "parameter*",
+              "min": 0
+            }
+          }
+        ],
+        "file": null,
+        "line": 14,
+        "column": 3,
+        "decl": {
+          "_": {
+            "element": "declaration",
+            "qualifiers": [],
+            "typename": "parameter",
+            "varname": "_",
+            "modifiers": {
+              "title": "$string"
+            },
+            "value": null,
+            "description": "parameter*",
+            "file": null,
+            "line": 15,
+            "column": 5,
+            "ruledata": {
+              "recursive": false,
+              "rulename": "parameter",
+              "desc": "parameter*",
+              "min": 0
+            }
+          }
+        },
+        "def": {},
+        "ruledata": {
+          "recursive": false,
+          "rulename": "dialog",
+          "desc": "dialog*",
+          "min": 0
+        }
+      }
+    },
+    "ruledata": {
+      "recursive": false,
+      "rulename": "network",
+      "desc": "network*",
+      "min": 0
+    }
+  }
+]
+No grammatic issues found

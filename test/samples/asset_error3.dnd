@@ -1,0 +1,6 @@
+network intranet {
+  zdialog Adjustments(title="Parameters of press adjustable parameters") {
+    parameter 'crank1.ground[1]'(title="Crank X position [mm]");
+    parameter 'crank1.ground[2]'(title="Crank Y position [mm]");
+  }
+}

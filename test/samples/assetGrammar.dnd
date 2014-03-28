@@ -9,3 +9,9 @@ computer _ "computer*" {
   set model = "$string" "model";
   set networkName = "$string" "name?";
 }
+
+network _ "network*" {
+  dialog _(title="$string") "dialog*" {
+    parameter _(title="$string") "parameter*";
+  }
+}

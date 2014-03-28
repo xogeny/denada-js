@@ -1,0 +1,15 @@
+printer ABC {
+   set location = "Mike's desk";
+   set model = "HP 8860";
+}
+
+printer DEF {
+   set location = "Coffee machine";
+   set model = "HP 8860";
+   set networkName = "PrinterDEF";
+}
+
+zomputer XYZ {
+   set location = "Mike's desk";
+   set model = "Mac Book Air";
+}
