@@ -7,9 +7,13 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
       peg: {
-	  example : {
+	  grammar: {
 	      src: "grammar.pegjs",
 	      dest: "grammar.js"
+	  },
+	  rules: {
+	      src: "rules.pegjs",
+	      dest: "rules.js"
 	  }
       },
       // Configure a mochaTest task
