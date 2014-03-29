@@ -140,7 +140,7 @@ describe("Declaration pattern handling", function() {
 
 	it("should pass typename matches using regexp", function (done) {
 	    var tree = denada.parse("Real x; Rigid z; Really y;");
-	    var rules = denada.parse("'R.*'"+' _ "realvar+";');
+	    var rules = denada.parse("'/^R/'"+' _ "realvar+";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
@@ -154,7 +154,7 @@ describe("Declaration pattern handling", function() {
 
 	it("should fail when typenames patterns don't match", function (done) {
 	    var tree = denada.parse("Integer y;");
-	    var rules = denada.parse("'Real|String'"+' y "realvar";');
+	    var rules = denada.parse("'/^(Real|String)$/'"+' y "realvar";');
 	    shouldFail(tree, rules);
 	    done();
 	});
@@ -169,7 +169,7 @@ describe("Declaration pattern handling", function() {
 	});
 	it("should pass varname matches using patterns", function (done) {
 	    var tree = denada.parse("Real x;");
-	    var rules = denada.parse('Real \'x|y|z\' "realvar";');
+	    var rules = denada.parse('Real \'/^(x|y|z)$/\' "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
@@ -181,7 +181,7 @@ describe("Declaration pattern handling", function() {
 	});
 	it("should fail when varname patterns don't match", function (done) {
 	    var tree = denada.parse("Real x;");
-	    var rules = denada.parse('Real \'a|b|c\' "realvar";');
+	    var rules = denada.parse('Real \'/^(a|b|c)$/\' "realvar";');
 	    shouldFail(tree, rules);
 	    done();
 	});
@@ -240,7 +240,7 @@ describe("Declaration pattern handling", function() {
 	});
 	it("should pass when qualifiers match patterns", function(done) {
 	    var tree = denada.parse("constant Real x; volatile discrete Real x;");
-	    var rules = denada.parse('\'constant|volatile|discrete\' Real x "realvar+";');
+	    var rules = denada.parse('\'/^(constant|volatile|discrete)$/\' Real x "realvar+";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
@@ -278,13 +278,13 @@ describe("Declaration pattern handling", function() {
 	});
 	it("should pass when modifications match pattern and wildcard", function(done) {
 	    var tree = denada.parse("Real x(y=5);");
-	    var rules = denada.parse('Real x(\'y|z\'=\"$_\") "realvar";');
+	    var rules = denada.parse('Real x(\'/^(y|z)$/\'=\"$_\") "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});
 	it("should pass when modifications match pattern and pattern", function(done) {
 	    var tree = denada.parse("Real x(y=5,z=true);");
-	    var rules = denada.parse('Real x(\'y|z\'=\"$number|boolean\") "realvar";');
+	    var rules = denada.parse('Real x(\'/^(y|z)$/\'=\"$number|boolean\") "realvar";');
 	    shouldProcess(tree, rules);
 	    done();
 	});

@@ -13,17 +13,6 @@ function addNamed(d) {
     }
 }
 
-function processPattern(p) {
-    // If the pattern is '_' then it always matches
-    if (p==="_") return function(s) { return true; }
-    // If the pattern starts and ends with "/", treat it as a RegExp
-    if (p[0]==="/" && p[p.length-1]==="/") return function(s) {
-	var re = new RegExp(p.slice(1,-1));
-	return re.test(s);
-    }
-    // Otherwise, just check for exactly equality
-    return function(s) { return p===s; }
-}
 
 exports.parse = function(s, options) {
     var ast;
@@ -65,18 +54,15 @@ exports.parseFile = function(s, callback) {
 }
 
 function matchIdentifier(id, pattern) {
-    // If the pattern is just the wildcard character, it is
-    // always a match
+    // If the pattern is '_' then it always matches
     if (pattern==="_") return true;
-
-    // If the pattern is (or could be) an unquoted identifier,
-    // assume that it must be an exact match...
-    if (pattern.match("^[a-zA-Z_]+$")) {
-	return id===pattern;
+    // If the pattern starts and ends with "/", treat it as a RegExp
+    if (pattern[0]==="/" && pattern[pattern.length-1]==="/") {
+	var re = new RegExp(pattern.slice(1,-1));
+	return re.test(id);
     }
-
-    // Otherwise, assume the pattern is a regexp
-    return id.match(pattern)!=null;
+    // Otherwise, just check for exactly equality
+    return pattern===id;
 }
 
 function matchValue(val, pattern) {
@@ -493,7 +479,7 @@ exports.pred.matchesRule = function(pat) {
 exports.pred.hasQualifier = function(qual) {
     return function(d) {
 	for(var i=0;i<d.qualifiers.length;i++) {
-	    if (d.qualifiers[i].match(qual)!=null) return true;
+	    if (d.qualifiers[i]===qual) return true;
 	}
 	return false;
     }
