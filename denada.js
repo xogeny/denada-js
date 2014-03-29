@@ -13,6 +13,18 @@ function addNamed(d) {
     }
 }
 
+function processPattern(p) {
+    // If the pattern is '_' then it always matches
+    if (p==="_") return function(s) { return true; }
+    // If the pattern starts and ends with "/", treat it as a RegExp
+    if (p[0]==="/" && p[p.length-1]==="/") return function(s) {
+	var re = new RegExp(p.slice(1,-1));
+	return re.test(s);
+    }
+    // Otherwise, just check for exactly equality
+    return function(s) { return p===s; }
+}
+
 exports.parse = function(s, options) {
     var ast;
     var msg;
