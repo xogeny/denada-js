@@ -14,7 +14,7 @@ function addNamed(d) {
 }
 
 
-exports.parse = function(s, options) {
+exports.parse = function(s, options, filename) {
     var ast;
     var msg;
     try {
@@ -25,10 +25,12 @@ exports.parse = function(s, options) {
 	exports.visit(ast, addNamed);
 	return ast;
     } catch(e) {
-	if (e.file==null) {
-	    msg = e.name+" on line "+e.line+" (column "+e.column+"): "+e.message;
-	} else {
+	if (filename) {
+	    msg = e.name+" on line "+e.line+" (column "+e.column+") of "+filename+": "+e.message;
+	} else if (e.file) {
 	    msg = e.name+" on line "+e.line+" (column "+e.column+") of "+e.file+": "+e.message;
+	} else {
+	    msg = e.name+" on line "+e.line+" (column "+e.column+"): "+e.message;
 	}
 	throw new Error(msg);
     }
@@ -37,7 +39,7 @@ exports.parse = function(s, options) {
 exports.parseFileSync = function(s, options) {
     var contents;
     contents = fs.readFileSync(s, 'utf8');
-    return exports.parse(contents, options);
+    return exports.parse(contents, options, s);
 }
 
 exports.parseFile = function(s, callback) {
@@ -45,7 +47,7 @@ exports.parseFile = function(s, callback) {
 	var ast;
 	if (err) callback(err);
 	try {
-	    ast = exports.parse(res);
+	    ast = exports.parse(res, {}, s);
 	    callback(undefined, ast);
 	} catch(e) {
 	    callback(e);
@@ -243,7 +245,11 @@ function checkContents(tree, rules) {
 	   the name of the rule and indicates its cardinality. */
 	desc = rule.description;
 	if (desc) {
-	    pdata = ruleGrammar.parse(desc);
+	    try {
+		pdata = ruleGrammar.parse(desc);
+	    } catch(e) {
+		throw new Error("Unable to parse rule '"+desc+"'");
+	    }
 	    recursive = pdata.recursive;
 	    rulename = pdata.name;
 	    min = pdata.min;

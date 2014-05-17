@@ -61,7 +61,7 @@ assignment
   = (_ "=" _ e:expr { return e; })?
 
 identifier
-  = chars:[a-zA-Z_]+ { return chars.join(""); }
+  = chars:[a-zA-Z_0-9]+ { return chars.join(""); }
   / "'" chars:[^'\\\0-\x1F\x7f]+ "'" { return chars.join(""); }
 
 expr
