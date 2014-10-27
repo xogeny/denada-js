@@ -60,8 +60,15 @@ dstring
 assignment
   = (_ "=" _ e:expr { return e; })?
 
+firstchar
+  = [a-zA-Z_]
+
+restchar
+  = [a-zA-Z_0-9]
+
 identifier
-  = chars:[a-zA-Z_0-9]+ { return chars.join(""); }
+  /* Should be '$(firstchar restchar+)', but I couldn't get that to work! */
+  = chars:$(restchar+) { return chars; }
   / "'" chars:[^'\\\0-\x1F\x7f]+ "'" { return chars.join(""); }
 
 expr
