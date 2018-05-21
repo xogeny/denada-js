@@ -70,7 +70,13 @@ function matchIdentifier(id: string, pattern: string) {
     return pattern === id;
 }
 
-export function matchSchema(val: any, schema: object) {
+export function matchValue(val: any, schema: object) {
+    if (schema === null) return val === schema;
+    if (typeof schema !== "object") {
+        console.warn(`Expected schema to be an object, but got ${typeof schema} instead`);
+        return false;
+    }
+
     const validator = new Ajv();
     validator.validateSchema(schema);
     const result = validator.validate(schema, val);
@@ -83,7 +89,7 @@ export function matchSchema(val: any, schema: object) {
     }
 }
 
-function matchValue(val: any, pattern: any) {
+export function matchValue2(val: any, pattern: any) {
     // If the pattern is a string then we must handle some special cases
     if (typeof pattern === "string") {
         // If the pattern starts with $, the rest is a pattern to match against
@@ -106,7 +112,7 @@ function matchValue(val: any, pattern: any) {
             return false;
         }
     } else if (typeof pattern === "object" && pattern !== null) {
-        return matchSchema(val, pattern);
+        return matchValue(val, pattern);
     } else {
         // If pattern isn't a string or an object, then just check for literal equality
         return val === pattern;

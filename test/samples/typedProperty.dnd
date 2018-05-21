@@ -1,4 +1,4 @@
-Real x "Distance to target";
+Real x = 1 "Distance to target";
 Integer y = 5;
 
 group A {

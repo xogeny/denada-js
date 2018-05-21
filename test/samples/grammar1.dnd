@@ -1,8 +1,8 @@
 Real _ "realvar*";
-Real _ = "$number" "realvar*";
+Real _ = { "type": "number" } "realvar*";
 Integer _ "intvar*";
-Integer _ = "$number" "intvar*";
+Integer _ = { "type": "number" } "intvar*";
 Boolean _ "boolvar*";
-Boolean _ = "$boolean" "boolvar*";
+Boolean _ = { "type": "boolean" } "boolvar*";
 String _ "strvar*";
-String _ = "opt1|opt2|opt3" "strvar*";
+String _ = { "type": "string", "enum": ["opt1", "opt2", "opt3"] } "strvar*";

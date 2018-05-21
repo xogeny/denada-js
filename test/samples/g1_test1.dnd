@@ -1,4 +1,4 @@
-Real x;
+Real x = 1;
 Real y = 25.0;
 
 Integer 'a.b' = 5;

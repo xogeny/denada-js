@@ -1,13 +1,13 @@
 Real _ "realProperty*";
-Real _ = "$number" "realProperty*";
+Real _ = { "type": "number" } "realProperty*";
 Integer _ "intProperty*";
-Integer _ = "$number" "intProperty*";
+Integer _ = { "type": "number" } "intProperty*";
 String _ "strProperty*";
-String _ = "$string" "strProperty*";
+String _ = { "type": "string" } "strProperty*";
 Boolean _ "boolProperty*";
-Boolean _ = "$boolean" "boolProperty*";
+Boolean _ = { "type": "boolean" } "boolProperty*";
 Object _ "objProperty*";
-Object _ = "$object" "objProperty*";
+Object _ = { "type": "object" } "objProperty*";
 
 group _ "^group*" {
 }

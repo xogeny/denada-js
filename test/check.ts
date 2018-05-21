@@ -3,10 +3,7 @@ import assert from "assert";
 
 function shouldProcess(tree, rules) {
     const issues = denada.process(tree, rules);
-    for (let i = 0; i < issues.length; i++) {
-        console.log("Unexpected issue: " + issues[i]);
-    }
-    assert.equal(issues.length, 0);
+    expect(issues).toEqual([]);
 }
 
 function shouldFail(tree, rules) {
@@ -167,22 +164,24 @@ describe("Declaration pattern handling", () => {
     describe("Values", () => {
         it("should pass value matches exactly", () => {
             const tree = denada.parse("Real x = 1;");
-            const rules = denada.parse('Real x = 1 "realvar";');
+            const rules = denada.parse('Real x = { "type": "number", "enum": [1] } "realvar";');
             shouldProcess(tree, rules);
         });
         it("should pass value matches type", () => {
             const tree = denada.parse("Real x = 1;");
-            const rules = denada.parse('Real x = "$number" "realvar";');
+            const rules = denada.parse('Real x = { "type": "number" } "realvar";');
             shouldProcess(tree, rules);
         });
         it("should pass value matches type wildcard", () => {
             const tree = denada.parse("Real x = 1;");
-            const rules = denada.parse('Real x = "$_" "realvar";');
+            const rules = denada.parse('Real x = {} "realvar";');
             shouldProcess(tree, rules);
         });
         it("should pass value matches type pattern", () => {
             const tree = denada.parse("Real x = 1;");
-            const rules = denada.parse('Real x = "$number|boolean" "realvar";');
+            const rules = denada.parse(
+                `Real x = { "oneOf": [ { "type": "number" }, { "type": "boolean" } ] } "realvar";`,
+            );
             shouldProcess(tree, rules);
         });
         it("should fail when values can't match", () => {
@@ -192,7 +191,7 @@ describe("Declaration pattern handling", () => {
         });
         it("should fail when value patterns don't match", () => {
             const tree = denada.parse("Real x = 1;");
-            const rules = denada.parse('Real x = "$boolean" "realvar";');
+            const rules = denada.parse('Real x = { "type": "boolean" } "realvar";');
             shouldFail(tree, rules);
         });
     });
@@ -226,42 +225,44 @@ describe("Declaration pattern handling", () => {
     describe("Modifications", () => {
         it("should pass when modifications match exactly", () => {
             const tree = denada.parse("Real x(y=5);");
-            const rules = denada.parse('Real x(y=5) "realvar";');
+            const rules = denada.parse('Real x(y={ "type": "number", "enum": [5] }) "realvar";');
             shouldProcess(tree, rules);
         });
         it("should pass when modifications match wildcards", () => {
             const tree = denada.parse("Real x(y=5);");
-            const rules = denada.parse('Real x(_="$_") "realvar";');
+            const rules = denada.parse('Real x(_={}) "realvar";');
             shouldProcess(tree, rules);
         });
         it("should pass when modifications match wildcard and patterns", () => {
             const tree = denada.parse("Real x(y=5);");
-            const rules = denada.parse('Real x(_="$number") "realvar";');
+            const rules = denada.parse('Real x(_={ "type": "number" }) "realvar";');
             shouldProcess(tree, rules);
         });
         it("should pass when modifications match pattern and wildcard", () => {
             const tree = denada.parse("Real x(y=5);");
-            const rules = denada.parse('Real x(\'/^(y|z)$/\'="$_") "realvar";');
+            const rules = denada.parse("Real x('/^(y|z)$/'={}) \"realvar\";");
             shouldProcess(tree, rules);
         });
         it("should pass when modifications match pattern and pattern", () => {
             const tree = denada.parse("Real x(y=5,z=true);");
-            const rules = denada.parse('Real x(\'/^(y|z)$/\'="$number|boolean") "realvar";');
+            const rules = denada.parse(
+                'Real x(\'/^(y|z)$/\'={ "oneOf": [ { "type": "number" }, { "type": "boolean" } ] }) "realvar";',
+            );
             shouldProcess(tree, rules);
         });
         it("should fail when modifications don't match exactly", () => {
             const tree = denada.parse("Real x(y=5);");
-            const rules = denada.parse('Real x(z=5) "realvar";');
+            const rules = denada.parse('Real x(z={ "type": "number", "enum": [5] }) "realvar";');
             shouldFail(tree, rules);
         });
         it("should fail when modifications value pattern doesn't match", () => {
             const tree = denada.parse("Real x(y=true);");
-            const rules = denada.parse('Real x(_="$number") "realvar";');
+            const rules = denada.parse('Real x(_={ "type": "number" }) "realvar";');
             shouldFail(tree, rules);
         });
         it("should fail when modifications name pattern doesn't match", () => {
             const tree = denada.parse("Real x(a=5);");
-            const rules = denada.parse('Real x(\'y|z\'="$_") "realvar";');
+            const rules = denada.parse("Real x('y|z'={}) \"realvar\";");
             shouldFail(tree, rules);
         });
     });
@@ -269,27 +270,27 @@ describe("Declaration pattern handling", () => {
     describe("Special string pattern handling", () => {
         it("should pass if string value matches literal", () => {
             const tree = denada.parse('String z = "hello";');
-            const rules = denada.parse('String z = "hello" "strvar*";');
+            const rules = denada.parse('String z = { "type": "string", "enum": ["hello"] } "strvar*";');
             shouldProcess(tree, rules);
         });
         it("should pass if string value matches wildcard", () => {
             const tree = denada.parse('String z = "hello";');
-            const rules = denada.parse('String z = "_" "strvar*";');
+            const rules = denada.parse('String z = {} "strvar*";');
             shouldProcess(tree, rules);
         });
         it("should pass if string value matches pattern", () => {
             const tree = denada.parse('String z = "foo";');
-            const rules = denada.parse('String z = "foo|bar" "strvar*";');
+            const rules = denada.parse('String z = { "type": "string", "enum": ["foo", "bar"] } "strvar*";');
             shouldProcess(tree, rules);
         });
         it("should fail if string value doesn't matches literal", () => {
             const tree = denada.parse('String z = "hello";');
-            const rules = denada.parse('String y = "hello" "strvar*";');
+            const rules = denada.parse('String y = { "type": "string", "enum": ["hello"] } "strvar*";');
             shouldFail(tree, rules);
         });
         it("should pass if string value matches pattern", () => {
             const tree = denada.parse('String z = "fuz";');
-            const rules = denada.parse('String z = "foo|bar" "strvar*";');
+            const rules = denada.parse('String z = { "type": "string", "enum": ["foo", "bar"] } "strvar*";');
             shouldFail(tree, rules);
         });
     });
