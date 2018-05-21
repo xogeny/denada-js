@@ -3087,12 +3087,6 @@ ts-jest@^22.4.6:
     source-map-support "^0.5.5"
     yargs "^11.0.0"
 
-ts-pegjs@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.npmjs.org/ts-pegjs/-/ts-pegjs-0.1.13.tgz#2bd318ee253e12cd3fad77c8393fa136c865dd79"
-  dependencies:
-    pegjs "^0.10.0"
-
 tslib@^1.8.0, tslib@^1.8.1:
   version "1.9.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.9.1.tgz#a5d1f0532a49221c87755cfcc89ca37197242ba7"

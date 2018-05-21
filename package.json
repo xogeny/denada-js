@@ -18,7 +18,11 @@
         "type": "git",
         "url": "http://github.com/xogeny/denada-js.git"
     },
-    "keywords": ["DSL", "parser", "declarative"],
+    "keywords": [
+        "DSL",
+        "parser",
+        "declarative"
+    ],
     "author": "Michael M. Tiller",
     "license": "MIT",
     "bugs": {
@@ -34,7 +38,6 @@
         "jest": "^22.4.4",
         "pegjs": "^0.10.0",
         "ts-jest": "^22.4.6",
-        "ts-pegjs": "^0.1.13",
         "tslint": "^5.10.0",
         "typescript": "^2.8.3"
     }
