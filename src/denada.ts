@@ -5,6 +5,7 @@ import { RuleData } from "./rule";
 
 import fs from "fs";
 
+// NB - Not sure what this did?!?
 // function addNamed(d: Node) {
 //     if (d.element == "declaration") return;
 //     if (!d.hasOwnProperty("decl")) d["decl"] = {};
@@ -17,40 +18,35 @@ import fs from "fs";
 // }
 
 export function parse(s: string, options: grammar.IParseOptions, filename?: string) {
-    var msg;
     try {
-        let ast = grammar.parse(s, options);
-        if (ast == null || ast == undefined) {
+        const ast = grammar.parse(s, options);
+        if (ast == null || ast === undefined) {
             // throw new Error("Parse failed to return a valid tree: " + args.tree);
             throw new Error("Parse failed to return a valid tree");
         }
         // visit(ast, addNamed);
         return ast;
     } catch (e) {
-        console.warn("e = ", e);
         if (filename) {
-            msg = e.name + " on line " + e.line + " (column " + e.column + ") of " + filename + ": " + e.message;
+            throw new Error(`${e.name} on line ${e.line} (column ${e.column}) of ${filename}: ${e.message}`);
         } else if (e.file) {
-            msg = e.name + " on line " + e.line + " (column " + e.column + ") of " + e.file + ": " + e.message;
+            throw new Error(`${e.name} on line ${e.line} (column ${e.column}) of ${e.file}: ${e.message}`);
         } else {
-            msg = e.name + " on line " + e.line + " (column " + e.column + "): " + e.message;
+            throw new Error(`${e.name} on line ${e.line} (column ${e.column}): ${e.message}`);
         }
-        throw new Error(msg);
     }
 }
 
 export function parseFileSync(s: string, options: grammar.IParseOptions) {
-    var contents;
-    contents = fs.readFileSync(s, "utf8");
+    const contents = fs.readFileSync(s, "utf8");
     return parse(contents, options, s);
 }
 
 export function parseFile(s: string, callback: (err: Error | null, ast?: AST) => void) {
-    fs.readFile(s, "utf8", function(err, res) {
-        var ast;
+    fs.readFile(s, "utf8", (err, res) => {
         if (err) callback(err);
         try {
-            ast = parse(res, {}, s);
+            const ast = parse(res, {}, s);
             callback(null, ast);
         } catch (e) {
             callback(e);
@@ -63,7 +59,7 @@ function matchIdentifier(id: string, pattern: string) {
     if (pattern === "_") return true;
     // If the pattern starts and ends with "/", treat it as a RegExp
     if (pattern[0] === "/" && pattern[pattern.length - 1] === "/") {
-        var re = new RegExp(pattern.slice(1, -1));
+        const re = new RegExp(pattern.slice(1, -1));
         return re.test(id);
     }
     // Otherwise, just check for exactly equality
@@ -72,16 +68,16 @@ function matchIdentifier(id: string, pattern: string) {
 
 function matchValue(val: string, pattern: string) {
     // If the pattern is a string then we must handle some special cases
-    if (typeof pattern == "string") {
+    if (typeof pattern === "string") {
         // If the pattern starts with $, the rest is a pattern to match against
         // the type of the value
-        if (pattern[0] == "$") {
-            var vtype = typeof val;
-            var pat = pattern.slice(1);
+        if (pattern[0] === "$") {
+            const vtype = typeof val;
+            const pat = pattern.slice(1);
             if (pat === "_") return true;
             if (vtype.match(pat) != null) return true;
             return false;
-        } else if (typeof val == "string") {
+        } else if (typeof val === "string") {
             // If the value is a string, then we treat the pattern
             // as a regexp or wildcard
             if (pattern === "_") return true;
@@ -98,12 +94,11 @@ function matchValue(val: string, pattern: string) {
 }
 
 function matchModifiers(obj: string[], patterns: string[]) {
-    var matched;
-    for (var op in obj) {
-        matched = false;
-        for (var pp in patterns) {
-            var imatch = matchIdentifier(op, pp);
-            var vmatch = matchValue(obj[op], patterns[pp]);
+    for (const op in obj) {
+        let matched = false;
+        for (const pp in patterns) {
+            const imatch = matchIdentifier(op, pp);
+            const vmatch = matchValue(obj[op], patterns[pp]);
             if (imatch && vmatch) {
                 matched = true;
                 break;
@@ -115,13 +110,13 @@ function matchModifiers(obj: string[], patterns: string[]) {
 }
 
 function matchQualifiers(quals: string[], patterns: string[], reasons: string[]) {
-    var required = [];
-    var count = [];
-    var pats = [];
-    var matched;
-    var pat;
-    for (var j = 0; j < patterns.length; j++) {
-        if (patterns[j].slice(-1) == "?") {
+    const required = [];
+    const count = [];
+    const pats = [];
+    let matched = false;
+    let pat: string | undefined;
+    for (let j = 0; j < patterns.length; j++) {
+        if (patterns[j].slice(-1) === "?") {
             pat = patterns[j].substr(0, patterns[j].length - 1);
             required.push(false);
         } else {
@@ -131,9 +126,9 @@ function matchQualifiers(quals: string[], patterns: string[], reasons: string[])
         pats.push(pat);
         count.push(0);
     }
-    for (var i = 0; i < quals.length; i++) {
+    for (let i = 0; i < quals.length; i++) {
         matched = false;
-        for (var j = 0; j < patterns.length; j++) {
+        for (let j = 0; j < patterns.length; j++) {
             if (matchIdentifier(quals[i], pats[j])) {
                 matched = true;
                 count[j]++;
@@ -142,8 +137,8 @@ function matchQualifiers(quals: string[], patterns: string[], reasons: string[])
         }
         if (!matched) return false;
     }
-    for (var j = 0; j < patterns.length; j++) {
-        if (required[j] && count[j] == 0) {
+    for (let j = 0; j < patterns.length; j++) {
+        if (required[j] && count[j] === 0) {
             reasons.push("missing required qualifier " + pats[j]);
             return false;
         }
@@ -200,7 +195,6 @@ function matchDefinition(
     issues: string[],
     reasons: string[],
 ) {
-    var subissues;
     if (!matchIdentifier(elem.name, rule.name)) {
         reasons.push("Name " + elem.name + " didn't match name pattern " + rule.name + " for rule " + data.rulename);
         return false;
@@ -219,8 +213,8 @@ function matchDefinition(
         reasons.push("Modifications didn't match set of potential modifications " + " for rule " + data.rulename);
         return false;
     }
-    subissues = checkContents(elem.contents, context || rule.contents);
-    for (var i = 0; i < subissues.length; i++) issues.push(subissues[i]);
+    const subissues = checkContents(elem.contents, context || rule.contents);
+    for (let i = 0; i < subissues.length; i++) issues.push(subissues[i]);
     return true;
 }
 
@@ -233,9 +227,9 @@ function matchElement(
     reasons: string[],
 ) {
     // If these aren't even the same type of element, they don't match
-    if (elem.element == "declaration" && rule.element == "declaration")
+    if (elem.element === "declaration" && rule.element === "declaration")
         return matchDeclaration(elem, rule, data, reasons);
-    if (elem.element == "definition" && rule.element == "definition")
+    if (elem.element === "definition" && rule.element === "definition")
         return matchDefinition(elem, rule, data, context, issues, reasons);
     if (elem.element !== rule.element) return false;
     throw new Error("Unexpected element type: " + elem.element);
@@ -246,79 +240,69 @@ function matchElement(
  * that represents the patterns in the AST that are allowed.
  */
 function checkContents(tree: Node[], rules: Node[]) {
-    var rule;
-    var desc;
-    var rulename;
-    var endswith;
-    var startswith;
-    var recursive;
-    var min;
-    var max;
-    var elem;
-    var data;
-    var matched;
-    var result;
-    var reasons: string[] = [];
-    var pdata;
-
-    var issues = []; // List of issues found (initially empty)
-    var subissues: string[] = []; // Used to record nested issues
-    var ruledata: { [name: string]: RuleData } = {}; // Collection of rules found in the rules ast
+    const issues: string[] = []; // List of issues found (initially empty)
+    let subissues: string[] = []; // Used to record nested issues
+    const ruledata: { [name: string]: RuleData } = {}; // Collection of rules found in the rules ast
 
     /* We start by looping over the rules and processing each rule we
        find to collect information for the `ruledata` collection. */
-    for (var i = 0; i < rules.length; i++) {
+    for (let i = 0; i < rules.length; i++) {
         /* Assume there are no min or max matches required, in general */
-        min = undefined;
-        max = undefined;
+        let min: number | undefined;
+        let max: number | undefined;
         /* Extract the specific element for this rule */
-        rule = rules[i];
+        const rule = rules[i];
         /* Extract the description for the rule.  The description contains
 	   the name of the rule and indicates its cardinality. */
-        desc = rule.description;
+        const desc = rule.description;
         if (desc) {
             try {
-                pdata = ruleGrammar.parse(desc, {});
-            } catch (e) {
-                throw new Error("Unable to parse rule '" + desc + "'");
-            }
-            recursive = pdata.recursive;
-            rulename = pdata.name;
-            min = pdata.min;
-            max = pdata.max;
+                const pdata = ruleGrammar.parse(desc, {});
+                const recursive = pdata.recursive;
+                const rulename = pdata.name;
+                min = pdata.min;
+                max = pdata.max;
 
-            // Check to see if we already have a rule with this name...
-            if (ruledata.hasOwnProperty(rulename)) {
-                // ...if so, make sure cardinality matches...
-                if (ruledata[rulename].desc !== desc) {
-                    throw new Error(
-                        "Rule " + rulename + " has mismatched cardinality: " + ruledata[rulename].desc + " vs. " + desc,
-                    );
+                // Check to see if we already have a rule with this name...
+                if (ruledata.hasOwnProperty(rulename)) {
+                    // ...if so, make sure cardinality matches...
+                    if (ruledata[rulename].desc !== desc) {
+                        throw new Error(
+                            "Rule " +
+                                rulename +
+                                " has mismatched cardinality: " +
+                                ruledata[rulename].desc +
+                                " vs. " +
+                                desc,
+                        );
+                    }
+                    // ...and then add the current rule as a potential match
+                    ruledata[rulename].matches.push(rule);
+                } else {
+                    // ...if not, initialize the rule data for this rule
+                    ruledata[rulename] = {
+                        matches: [rule],
+                        recursive: recursive,
+                        rulename: rulename,
+                        count: 0,
+                        desc: desc,
+                        min: min,
+                        max: max,
+                    };
                 }
-                // ...and then add the current rule as a potential match
-                ruledata[rulename].matches.push(rule);
-            } else {
-                // ...if not, initialize the rule data for this rule
-                ruledata[rulename] = {
-                    matches: [rule],
+                // Add the rule data to the rule
+                rule.ruledata = {
+                    matches: [],
                     recursive: recursive,
                     rulename: rulename,
-                    count: 0,
                     desc: desc,
+                    count: 0,
                     min: min,
                     max: max,
                 };
+            } catch (e) {
+                throw new Error("Unable to parse rule '" + desc + "'");
             }
-            // Add the rule data to the rule
-            rule.ruledata = {
-                matches: [],
-                recursive: recursive,
-                rulename: rulename,
-                desc: desc,
-                count: 0,
-                min: min,
-                max: max,
-            };
         } else {
             // Found an element in the rule tree with no rule name or cardinality information
             issues.push("Rule without rulename: " + rule);
@@ -328,18 +312,18 @@ function checkContents(tree: Node[], rules: Node[]) {
     // Now that we have all the rule data collected...
 
     // ...we loop through the elements in `tree`...
-    for (var i = 0; i < tree.length; i++) {
-        elem = tree[i];
-        matched = false;
+    for (let i = 0; i < tree.length; i++) {
+        const elem = tree[i];
+        let matched = false;
         // ..and then we loop through the rules to see if this element
         // matches any of the rules.
-        reasons = [];
-        for (var j in ruledata) {
-            data = ruledata[j];
-            for (var k = 0; k < data.matches.length; k++) {
-                rule = data.matches[k];
+        const reasons: string[] = [];
+        for (const j in ruledata) {
+            const data = ruledata[j];
+            for (let k = 0; k < data.matches.length; k++) {
+                const rule = data.matches[k];
                 subissues = [];
-                result = matchElement(elem, rule, data, data.recursive ? rules : null, subissues, reasons);
+                const result = matchElement(elem, rule, data, data.recursive ? rules : null, subissues, reasons);
 
                 // No match found, continue searching
                 if (result === false) continue;
@@ -352,12 +336,13 @@ function checkContents(tree: Node[], rules: Node[]) {
                 // Indicate we found a match
                 matched = true;
                 // Annotate the tree with information about which rule it matched
-                elem["rulename"] = data.rulename;
-                elem["count"] = data.count;
+                elem.rulename = data.rulename;
+                elem.count = data.count;
                 // Record the fact that we found another match for this rule
                 data.count = data.count + 1;
                 // Append any issues we found deeper in the tree hierarchy
-                issues = issues.concat(subissues);
+                subissues.forEach(x => issues.push(x));
+                // issues = issues.concat(subissues);
                 // Indicate we're done searching
                 break;
             }
@@ -366,7 +351,7 @@ function checkContents(tree: Node[], rules: Node[]) {
         }
         // If we get here and no match was found, report it.
         if (!matched) {
-            let location = elem.location
+            const location = elem.location
                 ? `Line ${elem.location.start.line}, column ${elem.location.start.column}`
                 : `Unknown location`;
             issues.push(
@@ -383,8 +368,8 @@ function checkContents(tree: Node[], rules: Node[]) {
     // Now that we've checked each element in `tree` to see if it has a match,
     // let's check to make sure that each rule had the appropriate number of
     // matches.
-    for (var j in ruledata) {
-        data = ruledata[j];
+    for (const j in ruledata) {
+        const data = ruledata[j];
         // If a minimum was specified, make sure we met it.
         if (data.min && data.count < data.min) {
             issues.push(
@@ -404,11 +389,11 @@ function checkContents(tree: Node[], rules: Node[]) {
 }
 
 export function process(tree: Node[], rules: Node[]) {
-    if (tree == null || tree == undefined) {
+    if (tree == null || tree === undefined) {
         return ["Invalid input tree: " + tree];
     }
     /* Compare tree to rules and collect any issues found */
-    var issues = checkContents(tree, rules);
+    const issues = checkContents(tree, rules);
     /* Return the tree and the issues */
     return issues;
 }
@@ -423,7 +408,7 @@ function unparseQualifiers(quals: string[]) {
 }
 
 function unparseValue(val: any) {
-    if (typeof val == "string") {
+    if (typeof val === "string") {
         return '"' + val + '"';
     }
     return val.toString();
@@ -432,7 +417,7 @@ function unparseValue(val: any) {
 function unparseModifiers(mods: string[]) {
     if (Object.keys(mods).length > 0) {
         mods = [];
-        for (var k in mods) {
+        for (const k in mods) {
             mods.push(unparseIdentifier(k) + "=" + unparseValue(mods[k]));
         }
         return "(" + mods.join(",") + ")";
@@ -441,7 +426,7 @@ function unparseModifiers(mods: string[]) {
 }
 
 function stringFill3(x: string, n: number) {
-    var s = "";
+    let s = "";
     for (;;) {
         if (n & 1) s += x;
         n >>= 1;
@@ -452,10 +437,10 @@ function stringFill3(x: string, n: number) {
 }
 
 function unparseTree(elem: Node, indent: number, recursive: boolean) {
-    var ret = "";
-    var mods = [];
+    let ret = "";
+    const mods: string[] = [];
     ret = ret + stringFill3(" ", indent);
-    if (elem.element == "definition") {
+    if (elem.element === "definition") {
         ret = ret + unparseQualifiers(elem.qualifiers);
         ret = ret + unparseIdentifier(elem.name);
         if (elem.modifiers != null) ret = ret + unparseModifiers(elem.modifiers);
@@ -464,14 +449,14 @@ function unparseTree(elem: Node, indent: number, recursive: boolean) {
         }
         if (recursive) {
             ret = ret + " {\n";
-            for (var i = 0; i < elem.contents.length; i++) {
+            for (let i = 0; i < elem.contents.length; i++) {
                 ret = ret + unparseTree(elem.contents[i], indent + 2, recursive);
             }
             ret = ret + stringFill3(" ", indent) + "}\n";
         } else {
             ret = ret + " { ... }";
         }
-    } else if (elem.element == "declaration") {
+    } else if (elem.element === "declaration") {
         // Qualifiers
         ret = ret + unparseQualifiers(elem.qualifiers);
         ret = ret + unparseIdentifier(elem.typename) + " " + unparseIdentifier(elem.varname);
@@ -490,10 +475,10 @@ function unparseTree(elem: Node, indent: number, recursive: boolean) {
 }
 
 export function unparse(tree: Node[] | Node, recursive?: boolean) {
-    var ret = "";
-    var recurse = recursive || true;
+    let ret = "";
+    const recurse = recursive || true;
     if (tree instanceof Array) {
-        for (var i = 0; i < tree.length; i++) {
+        for (let i = 0; i < tree.length; i++) {
             ret = ret + unparseTree(tree[i], 0, recursive || false);
         }
     } else {
@@ -503,17 +488,17 @@ export function unparse(tree: Node[] | Node, recursive?: boolean) {
 }
 
 export function visit(tree: Node[], f: (n: Node) => void) {
-    for (var i = 0; i < tree.length; i++) {
-        let node = tree[i];
+    for (let i = 0; i < tree.length; i++) {
+        const node = tree[i];
         f(node);
-        if (node.element == "definition") {
+        if (node.element === "definition") {
             visit(node.contents, f);
         }
     }
 }
 
 export function flatten(tree: AST, filter: (e: Node) => boolean) {
-    var elems: Node[] = [];
+    const elems: Node[] = [];
     visit(tree, (e: Node) => {
         if (filter) {
             if (filter(e)) elems.push(e);
@@ -537,7 +522,7 @@ export const pred = {
     },
     hasQualifier: (qual: string) => {
         return (d: Node) => {
-            for (var i = 0; i < d.qualifiers.length; i++) {
+            for (let i = 0; i < d.qualifiers.length; i++) {
                 if (d.qualifiers[i] === qual) return true;
             }
             return false;
