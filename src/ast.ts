@@ -39,7 +39,7 @@ export interface DeclarationNode extends BaseNode {
 
 export type Node = DefinitionNode | DeclarationNode;
 
-export type AST = DefinitionNode[];
+export type AST = Node[];
 
 export const sample: AST = [
     {

@@ -17,7 +17,8 @@ import fs from "fs";
 //     }
 // }
 
-export function parse(s: string, options: grammar.IParseOptions, filename?: string) {
+export function parse(s: string, options?: grammar.IParseOptions, filename?: string) {
+    options = options || {};
     try {
         const ast = grammar.parse(s, options);
         if (ast == null || ast === undefined) {
@@ -37,7 +38,7 @@ export function parse(s: string, options: grammar.IParseOptions, filename?: stri
     }
 }
 
-export function parseFileSync(s: string, options: grammar.IParseOptions) {
+export function parseFileSync(s: string, options?: grammar.IParseOptions) {
     const contents = fs.readFileSync(s, "utf8");
     return parse(contents, options, s);
 }

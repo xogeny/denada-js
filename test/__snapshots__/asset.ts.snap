@@ -1,0 +1,526 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Asset errors should detect invalid inner elements 1`] = `
+Array [
+  "Line 2, column 3: Unable to find a matching rule for element: zdialog Adjustments() {
+  parameter 'crank1.ground[1]'();
+  parameter 'crank1.ground[2]'();
+}
+ because
+  zdialog didn't match set of potential qualifiers dialog for rule dialog",
+]
+`;
+
+exports[`Asset errors should detect mismatched assignment types 1`] = `
+Array [
+  "Line 8, column 4: Unable to find a matching rule for element: set model=8860;
+ because
+  Variable name model didn't match name pattern location for rule location
+  Assigned value 8860 didn't match value pattern $string for rule model
+  Variable name model didn't match name pattern networkName for rule name",
+  "Expected at least 1 matches for rule model but found 0",
+]
+`;
+
+exports[`Asset errors should detect non-matching definitions 1`] = `
+Array [
+  "Line 12, column 1: Unable to find a matching rule for element: zomputer XYZ {
+  set location=\\"Mike's desk\\";
+  set model=\\"Mac Book Air\\";
+}
+ because
+  zomputer didn't match set of potential qualifiers printer for rule printer
+  zomputer didn't match set of potential qualifiers computer for rule computer
+  zomputer didn't match set of potential qualifiers network for rule network",
+]
+`;
+
+exports[`Asset example Example code should parse 1`] = `
+Array [
+  Object {
+    "contents": Array [
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 4,
+            "line": 3,
+            "offset": 50,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 2,
+            "offset": 17,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "Mike's desk",
+        "varname": "location",
+      },
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 1,
+            "line": 4,
+            "offset": 73,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 3,
+            "offset": 50,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "HP 8860",
+        "varname": "model",
+      },
+    ],
+    "description": null,
+    "element": "definition",
+    "file": null,
+    "location": Object {
+      "end": Object {
+        "column": 1,
+        "line": 6,
+        "offset": 76,
+      },
+      "start": Object {
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+    },
+    "modifiers": null,
+    "name": "ABC",
+    "qualifiers": Array [
+      "printer",
+    ],
+  },
+  Object {
+    "contents": Array [
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 4,
+            "line": 8,
+            "offset": 129,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 7,
+            "offset": 93,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "Coffee machine",
+        "varname": "location",
+      },
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 4,
+            "line": 9,
+            "offset": 155,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 8,
+            "offset": 129,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "HP 8860",
+        "varname": "model",
+      },
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 1,
+            "line": 10,
+            "offset": 187,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 9,
+            "offset": 155,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "PrinterDEF",
+        "varname": "networkName",
+      },
+    ],
+    "description": null,
+    "element": "definition",
+    "file": null,
+    "location": Object {
+      "end": Object {
+        "column": 1,
+        "line": 12,
+        "offset": 190,
+      },
+      "start": Object {
+        "column": 1,
+        "line": 6,
+        "offset": 76,
+      },
+    },
+    "modifiers": null,
+    "name": "DEF",
+    "qualifiers": Array [
+      "printer",
+    ],
+  },
+  Object {
+    "contents": Array [
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 4,
+            "line": 14,
+            "offset": 241,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 13,
+            "offset": 208,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "Mike's desk",
+        "varname": "location",
+      },
+      Object {
+        "description": null,
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 1,
+            "line": 15,
+            "offset": 269,
+          },
+          "start": Object {
+            "column": 4,
+            "line": 14,
+            "offset": 241,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "Mac Book Air",
+        "varname": "model",
+      },
+    ],
+    "description": null,
+    "element": "definition",
+    "file": null,
+    "location": Object {
+      "end": Object {
+        "column": 1,
+        "line": 16,
+        "offset": 271,
+      },
+      "start": Object {
+        "column": 1,
+        "line": 12,
+        "offset": 190,
+      },
+    },
+    "modifiers": null,
+    "name": "XYZ",
+    "qualifiers": Array [
+      "computer",
+    ],
+  },
+]
+`;
+
+exports[`Asset example Grammar should parse 1`] = `
+Array [
+  Object {
+    "contents": Array [
+      Object {
+        "description": "location",
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 3,
+            "line": 3,
+            "offset": 64,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 2,
+            "offset": 25,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "$string",
+        "varname": "location",
+      },
+      Object {
+        "description": "model",
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 3,
+            "line": 4,
+            "offset": 97,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 3,
+            "offset": 64,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "$string",
+        "varname": "model",
+      },
+      Object {
+        "description": "name?",
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 1,
+            "line": 5,
+            "offset": 134,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 4,
+            "offset": 97,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "$string",
+        "varname": "networkName",
+      },
+    ],
+    "description": "printer*",
+    "element": "definition",
+    "file": null,
+    "location": Object {
+      "end": Object {
+        "column": 1,
+        "line": 7,
+        "offset": 137,
+      },
+      "start": Object {
+        "column": 1,
+        "line": 1,
+        "offset": 0,
+      },
+    },
+    "modifiers": null,
+    "name": "_",
+    "qualifiers": Array [
+      "printer",
+    ],
+  },
+  Object {
+    "contents": Array [
+      Object {
+        "description": "location",
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 3,
+            "line": 9,
+            "offset": 203,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 8,
+            "offset": 164,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "$string",
+        "varname": "location",
+      },
+      Object {
+        "description": "model",
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 3,
+            "line": 10,
+            "offset": 236,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 9,
+            "offset": 203,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "$string",
+        "varname": "model",
+      },
+      Object {
+        "description": "name?",
+        "element": "declaration",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 1,
+            "line": 11,
+            "offset": 273,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 10,
+            "offset": 236,
+          },
+        },
+        "modifiers": null,
+        "qualifiers": Array [],
+        "typename": "set",
+        "value": "$string",
+        "varname": "networkName",
+      },
+    ],
+    "description": "computer*",
+    "element": "definition",
+    "file": null,
+    "location": Object {
+      "end": Object {
+        "column": 1,
+        "line": 13,
+        "offset": 276,
+      },
+      "start": Object {
+        "column": 1,
+        "line": 7,
+        "offset": 137,
+      },
+    },
+    "modifiers": null,
+    "name": "_",
+    "qualifiers": Array [
+      "computer",
+    ],
+  },
+  Object {
+    "contents": Array [
+      Object {
+        "contents": Array [
+          Object {
+            "description": "parameter*",
+            "element": "declaration",
+            "file": null,
+            "location": Object {
+              "end": Object {
+                "column": 3,
+                "line": 16,
+                "offset": 388,
+              },
+              "start": Object {
+                "column": 5,
+                "line": 15,
+                "offset": 343,
+              },
+            },
+            "modifiers": Object {
+              "title": "$string",
+            },
+            "qualifiers": Array [],
+            "typename": "parameter",
+            "value": null,
+            "varname": "_",
+          },
+        ],
+        "description": "dialog*",
+        "element": "definition",
+        "file": null,
+        "location": Object {
+          "end": Object {
+            "column": 1,
+            "line": 17,
+            "offset": 390,
+          },
+          "start": Object {
+            "column": 3,
+            "line": 14,
+            "offset": 301,
+          },
+        },
+        "modifiers": Object {
+          "title": "$string",
+        },
+        "name": "_",
+        "qualifiers": Array [
+          "dialog",
+        ],
+      },
+    ],
+    "description": "network*",
+    "element": "definition",
+    "file": null,
+    "location": Object {
+      "end": Object {
+        "column": 1,
+        "line": 18,
+        "offset": 392,
+      },
+      "start": Object {
+        "column": 1,
+        "line": 13,
+        "offset": 276,
+      },
+    },
+    "modifiers": null,
+    "name": "_",
+    "qualifiers": Array [
+      "network",
+    ],
+  },
+]
+`;
