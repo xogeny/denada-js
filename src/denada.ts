@@ -31,12 +31,23 @@ export function parse(s: string, options?: grammar.IParseOptions, filename?: str
         // visit(ast, addNamed);
         return ast;
     } catch (e) {
+        console.log("e = ", e);
         if (filename) {
-            throw new Error(`${e.name} on line ${e.line} (column ${e.column}) of ${filename}: ${e.message}`);
+            throw new Error(
+                `${e.name} on line ${e.location.start.line} (column ${e.location.start.column}) of ${filename}: ${
+                    e.message
+                }`,
+            );
         } else if (e.file) {
-            throw new Error(`${e.name} on line ${e.line} (column ${e.column}) of ${e.file}: ${e.message}`);
+            throw new Error(
+                `${e.name} on line ${e.location.start.line} (column ${e.location.start.column}) of ${e.file}: ${
+                    e.message
+                }`,
+            );
         } else {
-            throw new Error(`${e.name} on line ${e.line} (column ${e.column}): ${e.message}`);
+            throw new Error(
+                `${e.name} on line ${e.location.start.line} (column ${e.location.start.column}): ${e.message}`,
+            );
         }
     }
 }
