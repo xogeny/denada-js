@@ -1,17 +1,17 @@
 printer _ "printer*" {
-  set location = "$string" "location";
-  set model = "$string" "model";
-  set networkName = "$string" "name?";
+  set location = { "type": "string" } "location";
+  set model = { "type": "string" } "model";
+  set networkName = { "type": "string" } "name?";
 }
 
 computer _ "computer*" {
-  set location = "$string" "location";
-  set model = "$string" "model";
-  set networkName = "$string" "name?";
+  set location = { "type": "string" } "location";
+  set model = { "type": "string" } "model";
+  set networkName = { "type": "string" } "name?";
 }
 
 network _ "network*" {
-  dialog _(title="$string") "dialog*" {
-    parameter _(title="$string") "parameter*";
+  dialog _(title={ "type": "string" }) "dialog*" {
+    parameter _(title={ "type": "string" }) "parameter*";
   }
 }

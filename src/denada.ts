@@ -2,6 +2,7 @@ import * as grammar from "./grammar";
 import * as ruleGrammar from "./ruleGrammar";
 import { Node, AST, DeclarationNode, DefinitionNode, Modifiers } from "./ast";
 import { RuleData } from "./rule";
+import Ajv from "ajv";
 
 import fs from "fs";
 
@@ -69,10 +70,18 @@ function matchIdentifier(id: string, pattern: string) {
     return pattern === id;
 }
 
-// function matchValue(val: any, schema: object) {
-//     // TODO: Do Schema checking
-//     return true;
-// }
+export function matchSchema(val: any, schema: object) {
+    const validator = new Ajv();
+    validator.validateSchema(schema);
+    const result = validator.validate(schema, val);
+    if (result === true) {
+        return true;
+    } else if (result === false) {
+        return false;
+    } else {
+        throw new Error("Validation required a schema with $ref...only synchronous validation is supported");
+    }
+}
 
 function matchValue(val: any, pattern: any) {
     // If the pattern is a string then we must handle some special cases
@@ -96,9 +105,12 @@ function matchValue(val: any, pattern: any) {
             // is not.  In that case, no match is possible
             return false;
         }
+    } else if (typeof pattern === "object" && pattern !== null) {
+        return matchSchema(val, pattern);
+    } else {
+        // If pattern isn't a string or an object, then just check for literal equality
+        return val === pattern;
     }
-    // If pattern isn't a string, then just check for literal equality
-    return val === pattern;
 }
 
 function matchModifiers(obj: Modifiers, patterns: Modifiers) {
