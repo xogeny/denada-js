@@ -1,5 +1,6 @@
 node_modules
 src/grammar.js
 src/ruleGrammar.js
-lib
 coverage
+
+!lib
