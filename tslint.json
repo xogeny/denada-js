@@ -12,7 +12,8 @@
         "arrow-parens": false,
         "no-bitwise": false,
         "no-console": false,
-        "interface-name": false
+        "interface-name": false,
+        "interface-over-type-literal": false
     },
     "rulesDirectory": []
 }

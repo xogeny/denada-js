@@ -30,6 +30,7 @@
     },
     "homepage": "https://github.com/xogeny/denada-js",
     "dependencies": {
+        "ajv": "^6.5.0",
         "argparse": "^0.1.15"
     },
     "devDependencies": {

@@ -1,6 +1,6 @@
 import * as grammar from "./grammar";
 import * as ruleGrammar from "./ruleGrammar";
-import { Node, AST, DeclarationNode, DefinitionNode } from "./ast";
+import { Node, AST, DeclarationNode, DefinitionNode, Modifiers } from "./ast";
 import { RuleData } from "./rule";
 
 import fs from "fs";
@@ -16,6 +16,8 @@ import fs from "fs";
 //         if (elem.element === "declaration") d["decl"][elem.varname] = elem;
 //     }
 // }
+
+type Schema = object;
 
 export function parse(s: string, options?: grammar.IParseOptions, filename?: string) {
     options = options || {};
@@ -67,7 +69,12 @@ function matchIdentifier(id: string, pattern: string) {
     return pattern === id;
 }
 
-function matchValue(val: string, pattern: string) {
+// function matchValue(val: any, schema: object) {
+//     // TODO: Do Schema checking
+//     return true;
+// }
+
+function matchValue(val: any, pattern: any) {
     // If the pattern is a string then we must handle some special cases
     if (typeof pattern === "string") {
         // If the pattern starts with $, the rest is a pattern to match against
@@ -94,7 +101,7 @@ function matchValue(val: string, pattern: string) {
     return val === pattern;
 }
 
-function matchModifiers(obj: string[], patterns: string[]) {
+function matchModifiers(obj: Modifiers, patterns: Modifiers) {
     for (const op in obj) {
         let matched = false;
         for (const pp in patterns) {
@@ -415,7 +422,7 @@ function unparseValue(val: any) {
     return val.toString();
 }
 
-function unparseModifiers(mods: string[]) {
+function unparseModifiers(mods: Modifiers) {
     if (Object.keys(mods).length > 0) {
         mods = [];
         for (const k in mods) {

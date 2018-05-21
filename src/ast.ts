@@ -11,9 +11,11 @@ export interface ParseLocation {
     end: ParseRange;
 }
 
+export type Modifiers = { [key: string]: any };
+
 export interface BaseNode {
     qualifiers: string[];
-    modifiers: string[];
+    modifiers: Modifiers;
 
     description: string | null;
     rulename?: string;
