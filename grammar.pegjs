@@ -22,8 +22,7 @@ declaration
       "value": val,
       "description": dstr,
       "file": null,
-      "line": line(),
-      "column": column()
+      "location": location(),
     };
   }
 
@@ -49,8 +48,7 @@ definition
       "description": dstr,
       "contents": contents,
       "file": null,
-      "line": line(),
-      "column": column()
+      "location": location(),
     };
   }
 
