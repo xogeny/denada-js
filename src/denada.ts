@@ -31,7 +31,6 @@ export function parse(s: string, options?: grammar.IParseOptions, filename?: str
         // visit(ast, addNamed);
         return ast;
     } catch (e) {
-        console.log("e = ", e);
         if (filename) {
             throw new Error(
                 `${e.name} on line ${e.location.start.line} (column ${e.location.start.column}) of ${filename}: ${
@@ -69,13 +68,16 @@ export function parseFile(s: string, callback: (err: Error | null, ast?: AST) =>
     });
 }
 
-function matchIdentifier(id: string, pattern: string) {
+function matchIdentifier(id: string | undefined, pattern: string | undefined) {
     // If the pattern is '_' then it always matches
     if (pattern === "_") return true;
-    // If the pattern starts and ends with "/", treat it as a RegExp
-    if (pattern[0] === "/" && pattern[pattern.length - 1] === "/") {
-        const re = new RegExp(pattern.slice(1, -1));
-        return re.test(id);
+
+    if (typeof pattern === "string" && pattern.length > 0 && id !== undefined) {
+        // If the pattern starts and ends with "/", treat it as a RegExp
+        if (pattern[0] === "/" && pattern[pattern.length - 1] === "/") {
+            const re = new RegExp(pattern.slice(1, -1));
+            return re.test(id);
+        }
     }
     // Otherwise, just check for exactly equality
     return pattern === id;
@@ -453,11 +455,11 @@ function unparseValue(val: any) {
 
 function unparseModifiers(mods: Modifiers) {
     if (Object.keys(mods).length > 0) {
-        mods = [];
-        for (const k in mods) {
-            mods.push(unparseIdentifier(k) + "=" + unparseValue(mods[k]));
+        const strs: string[] = [];
+        for (const k in strs) {
+            strs.push(unparseIdentifier(k) + "=" + unparseValue(mods[k]));
         }
-        return "(" + mods.join(",") + ")";
+        return "(" + strs.join(",") + ")";
     }
     return "";
 }
@@ -496,7 +498,10 @@ function unparseTree(elem: Node, indent: number, recursive: boolean) {
     } else if (elem.element === "declaration") {
         // Qualifiers
         ret = ret + unparseQualifiers(elem.qualifiers);
-        ret = ret + unparseIdentifier(elem.typename) + " " + unparseIdentifier(elem.varname);
+        if (elem.typename) {
+            ret = ret + unparseIdentifier(elem.typename) + " ";
+        }
+        ret = ret + unparseIdentifier(elem.varname);
         if (elem.modifiers != null) ret = ret + unparseModifiers(elem.modifiers);
         if (elem.value != null) {
             ret = ret + "=" + unparseValue(elem.value);

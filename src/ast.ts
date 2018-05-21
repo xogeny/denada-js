@@ -34,7 +34,7 @@ export interface DefinitionNode extends BaseNode {
 
 export interface DeclarationNode extends BaseNode {
     element: "declaration";
-    typename: string;
+    typename?: string;
     varname: string;
     value: any;
 }
