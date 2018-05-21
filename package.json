@@ -1,8 +1,9 @@
 {
     "name": "denada",
-    "version": "0.2.0",
+    "version": "0.9.0-rc1",
     "description": "A declarative language with no semantics for creating simple DSLs",
-    "main": "denada.js",
+    "main": "lib/src/denada.js",
+    "typings": "lib/src/denada.d.ts",
     "bin": {
         "denada": "bin/denada"
     },
@@ -12,17 +13,14 @@
         "process:rules": "pegjs -o src/ruleGrammar.js ruleGrammar.pegjs",
         "copy": "cp src/*.js src/*.d.ts lib/src",
         "compile": "yarn process && tsc && yarn copy",
+        "prepublish": "yarn compile",
         "test": "yarn compile && jest"
     },
     "repository": {
         "type": "git",
         "url": "http://github.com/xogeny/denada-js.git"
     },
-    "keywords": [
-        "DSL",
-        "parser",
-        "declarative"
-    ],
+    "keywords": ["DSL", "parser", "declarative"],
     "author": "Michael M. Tiller",
     "license": "MIT",
     "bugs": {
