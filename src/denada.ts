@@ -344,7 +344,7 @@ function checkContents(tree: Node[], rules: Node[]) {
             }
         } else {
             // Found an element in the rule tree with no rule name or cardinality information
-            issues.push("Rule without rulename: " + rule);
+            issues.push("Rule without rulename: " + unparse(rule));
         }
     }
 
